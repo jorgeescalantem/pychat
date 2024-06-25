@@ -47,7 +47,7 @@ def agregra_mensajes_log(texto):
     db.session.commit()
 
 # conectar comn meta
-TOKEN_TEMP= "TOKENTEMPO"
+TOKEN_TEMP= ''
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
     if request.method=='GET':
