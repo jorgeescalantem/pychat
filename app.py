@@ -57,8 +57,8 @@ def webhook():
         response = recibir_mensajes(request)
         return response
 def verificar_token(req):
-    token = req.args.get('hub.verify_token')
-    challenge= req.args.get('hub.challenge')
+    token = request.args.get('hub.verify_token')
+    challenge= request.args.get('hub.challenge')
 
     if challenge and token == TOKEN_TEMP:
         return challenge
