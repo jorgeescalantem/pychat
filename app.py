@@ -47,7 +47,7 @@ def agregra_mensajes_log(texto):
     db.session.commit()
 
 # conectar comn meta
-TOKEN_TEMP= ''
+TOKEN_TEMP= 'TOKENTEMPO'
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
     if request.method=='GET':
@@ -57,8 +57,8 @@ def webhook():
         response = recibir_mensajes(request)
         return response
 def verificar_token(req):
-    token = request.args.get('hub.verify_token')
-    challenge= request.args.get('hub.challenge')
+    token = req.args.get('hub.verify_token')
+    challenge= req.args.get('hub.challenge')
 
     if challenge and token == TOKEN_TEMP:
         return challenge
