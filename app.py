@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
@@ -25,13 +25,6 @@ class log(db.Model):
 with app.app_context():
     db.create_all()
 
-    prueba1= log(texto='mensaje de prueba 1')
-    prueba2= log(texto='mensaje de prueba 2')
-
-    db.session.add(prueba1)
-    db.session.add(prueba2)
-    db.session.commit()
-
 #funcion para ordenar los registros por fecha y hora
 def order_por_fecha_y_hora(registros):
     return sorted(registros,key=lambda x: x.fecha_y_hora,reverse=True)    
@@ -53,6 +46,29 @@ def agregra_mensajes_log(texto):
     db.session.add(nuevo_registro)
     db.session.commit()
 
+# conectar comn meta
+TOKEN_TEMP= "TOKENTEMPO"
+@app.route('/webhook',methods=['GET','POST'])
+def webhook():
+    if request.method=='GET':
+        challenge=verificar_token(request)
+        return challenge
+    elif request.method=='POST':
+        response = recibir_mensajes(request)
+        return response
+def verificar_token(req):
+    token = req.args.get('hub.verify_token')
+    challenge= req.args.get('hub.challenge')
+
+    if challenge and token == TOKEN_TEMP:
+        return challenge
+    else:
+        return jsonify({"error":"token invalido"}),401       
+            
+def recibir_mensajes(req):
+    req= request.get_json()
+    agregra_mensajes_log(req)
+    return jsonify({'message':'EVENT_RECEIVED'})
   
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
