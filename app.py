@@ -89,7 +89,7 @@ def recibir_mensajes(req):
                     agregra_mensajes_log(json.dumps(text))
                     agregra_mensajes_log(json.dumps(numero))
                     agregra_mensajes_log(json.dumps(req))
-                    agregra_mensajes_log(json.dumps(para))
+                    agregra_mensajes_log(json.dumps(objeto_para))
 
 
 
