@@ -1,0 +1,39 @@
+{
+    "object": "whatsapp_business_account",
+    "entry": [
+        {
+            "id": "111895721838218",
+            "changes": [
+                {
+                    "value": {
+                        "messaging_product": "whatsapp",
+                        "metadata": {
+                            "display_phone_number": "15550253453",
+                            "phone_number_id": "117168924654185"
+                        },
+                        "contacts": [
+                            {
+                                "profile": {
+                                    "name": "Solucionesmipres.com"
+                                },
+                                "wa_id": "573506138854"
+                            }
+                        ],
+                        "messages": [
+                            {
+                                "from": "573506138854",
+                                "id": "wamid.HBgMNTczNTA2MTM4ODU0FQIAEhggQjk3QjRERkZBQkQ2N0NEMTU3NURDQTk4QTZGRkY3NzMA",
+                                "timestamp": "1720467400",
+                                "text": {
+                                    "body": "Test number"
+                                },
+                                "type": "text"
+                            }
+                        ]
+                    },
+                    "field": "messages"
+                }
+            ]
+        }
+    ]
+}

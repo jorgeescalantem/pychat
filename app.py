@@ -70,8 +70,10 @@ def recibir_mensajes(req):
         changes = entry['changes'][0]
         value = changes['value']
         objeto_mensaje=value['messages']
+        objeto_para=value['metadata']
 
         if objeto_mensaje:
+            para=objeto_para[0]
             messages=objeto_mensaje[0]
             if "type" in messages:
                 tipo= messages["type"]
@@ -81,10 +83,13 @@ def recibir_mensajes(req):
                 if "text" in messages:
                     text = messages["text"]["body"]
                     numero= messages["from"]
+                    chat= para["phone_number_id"]
+
 
                     agregra_mensajes_log(json.dumps(text))
                     agregra_mensajes_log(json.dumps(numero))
                     agregra_mensajes_log(json.dumps(req))
+                    agregra_mensajes_log(json.dumps(chat))
 
 
 
