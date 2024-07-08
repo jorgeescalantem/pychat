@@ -83,13 +83,13 @@ def recibir_mensajes(req):
                 if "text" in messages:
                     text = messages["text"]["body"]
                     numero= messages["from"]
-                    chat= para["phone_number_id"]
+                    #chat= para["phone_number_id"]
 
 
                     agregra_mensajes_log(json.dumps(text))
                     agregra_mensajes_log(json.dumps(numero))
                     agregra_mensajes_log(json.dumps(req))
-                    agregra_mensajes_log(json.dumps(chat))
+                    agregra_mensajes_log(json.dumps(para))
 
 
 
