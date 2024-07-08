@@ -19,7 +19,7 @@ class log(db.Model):
 
     id=db.Column(db.Integer,primary_key=True)
     fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow)
-    texto=db.Column(db.JSON)
+    texto=db.Column(db.TEXT)
 
 # crear tabla si no exixte
 with app.app_context():
@@ -68,7 +68,21 @@ def verificar_token(req):
 def recibir_mensajes(req):
     req= request.get_json()
     agregra_mensajes_log(req)
-    return jsonify({'message':'EVENT_RECEIVED'})
+
+    try:
+        req = request.get_json()
+        entry=req['Entry'][0]
+        changes=entry['changes'][0]
+        value= changes['value']
+        objeto_mensaje=value['messages']
+
+        agregra_mensajes_log(objeto_mensaje)       
+
+
+        return jsonify({'message':'EVENT_RECEIVED'})
+
+    except Exception as e:    
+        return jsonify({'message':'EVENT_RECEIVED'})
   
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
