@@ -16,7 +16,6 @@ db=SQLAlchemy(app)
 
 # Modelo de la tabla LOG 
 class log(db.Model):
-
     id=db.Column(db.Integer,primary_key=True)
     fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow)
     texto=db.Column(db.TEXT)
@@ -40,7 +39,6 @@ mensajes_log=[]
 # funcion para agregar mensajes a la base de datos
 def agregra_mensajes_log(texto):
     mensajes_log.append(texto)
-
     #guardar mensajes en la base de datos
     nuevo_registro = log(texto=texto)
     db.session.add(nuevo_registro)
@@ -66,16 +64,14 @@ def verificar_token(req):
         return jsonify({"error":"token invalido"}),401       
             
 def recibir_mensajes(req):  
-
     try:
         req = request.get_json()
-        entry=req['Entry'][0]
-        changes=entry['changes'][0]
-        value= changes['value']
+        entry = req['entry'][0]
+        changes = entry['changes'][0]
+        value = changes['value']
         objeto_mensaje=value['messages']
 
-        agregra_mensajes_log(json.dumps(objeto_mensaje))     
-
+        agregra_mensajes_log(json.dumps(objeto_mensaje))    
 
         return jsonify({'message':'EVENT_RECEIVED'})
 
