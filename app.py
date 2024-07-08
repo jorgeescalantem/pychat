@@ -19,7 +19,7 @@ class log(db.Model):
 
     id=db.Column(db.Integer,primary_key=True)
     fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow)
-    texto=db.Column(db.TEXT)
+    texto=db.Column(db.JSON)
 
 # crear tabla si no exixte
 with app.app_context():
