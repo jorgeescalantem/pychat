@@ -144,9 +144,8 @@ def enviar_mensajes_whatsapp(number):
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
         
-        d=response
-        with open("response.json",'w') as outfile:
-            json.dump(d,outfile,indent=4)
+        agregra_mensajes_log(json.dumps(response))
+     
         #resp=[]
         #resp.append(response)
 
