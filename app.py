@@ -1,216 +1,111 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import http.client
 import json
+import http.client
+
+
 
 app = Flask(__name__)
+#CONFIGURACION de la base de datos SQL lite
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///metapython.db"
+app.config['SQLLCHEMY_TRACK_MODIFICATIONS'] = False
+db=SQLAlchemy(app)
 
-#Configuracion de la base de datos SQLITE
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///metapython.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db =SQLAlchemy(app)
 
-#Modelo de la tabla log
-class Log(db.Model):
-    id = db.Column(db.Integer,primary_key=True)
-    fecha_y_hora = db.Column(db.DateTime, default=datetime.utcnow)
-    texto = db.Column(db.TEXT)
+# Modelo de la tabla LOG 
+class log(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow)
+    texto=db.Column(db.TEXT)
 
-#Crear la tabla si no existe
+# crear tabla si no exixte
 with app.app_context():
     db.create_all()
 
-#Funcion para ordenar los registros por fecha y hora
-def ordenar_por_fecha_y_hora(registros):
-    return sorted(registros, key=lambda x: x.fecha_y_hora,reverse=True)
+#funcion para ordenar los registros por fecha y hora
+def order_por_fecha_y_hora(registros):
+    return sorted(registros,key=lambda x: x.fecha_y_hora,reverse=True)    
 
 @app.route('/')
 def index():
-    #obtener todos los registros ed la base de datos
-    registros = Log.query.all()
-    registros_ordenados = ordenar_por_fecha_y_hora(registros)
+    #obtener todos los registros de la DB
+    registros= log.query.all()
+    registros_ordenados=order_por_fecha_y_hora(registros)
     return render_template('index.html',registros=registros_ordenados)
 
-mensajes_log = []
-
-#Funcion para agregar mensajes y guardar en la base de datos
-def agregar_mensajes_log(texto):
+mensajes_log=[]
+# funcion para agregar mensajes a la base de datos
+def agregra_mensajes_log(texto):
     mensajes_log.append(texto)
-
-    #Guardar el mensaje en la base de datos
-    nuevo_registro = Log(texto=texto)
+    #guardar mensajes en la base de datos
+    nuevo_registro = log(texto=texto)
     db.session.add(nuevo_registro)
     db.session.commit()
 
-#Token de verificacion para la configuracion
-TOKEN_ANDERCODE = "ANDERCODE"
-
-@app.route('/webhook', methods=['GET','POST'])
+# conectar comn meta
+TOKEN_TEMP= 'TOKENTEMPO'
+@app.route('/webhook',methods=['GET','POST'])
 def webhook():
-    if request.method == 'GET':
-        challenge = verificar_token(request)
+    if request.method=='GET':
+        challenge=verificar_token(request)
         return challenge
-    elif request.method == 'POST':
-        reponse = recibir_mensajes(request)
-        return reponse
-
+    elif request.method=='POST':
+        response = recibir_mensajes(request)
+        return response
 def verificar_token(req):
     token = req.args.get('hub.verify_token')
-    challenge = req.args.get('hub.challenge')
+    challenge= req.args.get('hub.challenge')
 
-    if challenge and token == TOKEN_ANDERCODE:
+    if challenge and token == TOKEN_TEMP:
         return challenge
     else:
-        return jsonify({'error':'Token Invalido'}),401
-
-def recibir_mensajes(req):
+        return jsonify({"error":"token invalido"}),401       
+            
+def recibir_mensajes(req):  
     try:
         req = request.get_json()
-        entry =req['entry'][0]
+        entry = req['entry'][0]
         changes = entry['changes'][0]
         value = changes['value']
-        objeto_mensaje = value['messages']
+        objeto_mensaje=value['messages']
+        #objeto_para=value['metadata']
 
         if objeto_mensaje:
-            messages = objeto_mensaje[0]
-
+           # para=objeto_para[0]
+            messages=objeto_mensaje[0]
             if "type" in messages:
-                tipo = messages["type"]
-
+                tipo= messages["type"]
                 #Guardar Log en la BD
-                agregar_mensajes_log(json.dumps(messages))
+                agregra_mensajes_log(json.dumps(req))
 
                 if tipo == "interactive":
                     tipo_interactivo = messages["interactive"]["type"]
-
                     if tipo_interactivo == "button_reply":
                         text = messages["interactive"]["button_reply"]["id"]
                         numero = messages["from"]
-
-                        enviar_mensajes_whatsapp(text,numero)
+                    #return 1
                     
-                    elif tipo_interactivo == "list_reply":
-                        text = messages["interactive"]["list_reply"]["id"]
-                        numero = messages["from"]
-
-                        enviar_mensajes_whatsapp(text,numero)
-
                 if "text" in messages:
                     text = messages["text"]["body"]
-                    numero = messages["from"]
+                    numero= messages["from"]                    #chat= para["phone_number_id"]
 
-                    enviar_mensajes_whatsapp(text,numero)
 
-                    #Guardar Log en la BD
-                    agregar_mensajes_log(json.dumps(messages))
+                    agregra_mensajes_log(json.dumps(text))
+                    agregra_mensajes_log(json.dumps(numero))
+                    agregra_mensajes_log(json.dumps(req))
+                    #agregra_mensajes_log(json.dumps(objeto_para))
 
         return jsonify({'message':'EVENT_RECEIVED'})
-    except Exception as e:
-        return jsonify({'message':'EVENT_RECEIVED'})
 
-def enviar_mensajes_whatsapp(texto,number):
+    except Exception as e:    
+        return jsonify({'message':'EVENT_RECEIVED'})
+# enviar mensaje de plantilla para envio con boton
+@app.route("/send/<number>",methods=["POST", "GET"] )
+def enviar_mensajes_whatsapp(number):
+    empresa="SCA SOLUCIONES EXPRESS"
     texto = texto.lower()
-
-    if "hola" in texto:
-        data={
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "🚀 Hola, ¿Cómo estás? Bienvenido."
-            }
-        }
-    elif "1" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-            }
-        }
-    elif "2" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "to": number,
-            "type": "location",
-            "location": {
-                "latitude": "-12.067158831865067",
-                "longitude": "-77.03377940839486",
-                "name": "Estadio Nacional del Perú",
-                "address": "Cercado de Lima"
-            }
-        }
-    elif "3" in texto:
-        data={
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "document",
-            "document": {
-                    "link": "https://www.turnerlibros.com/wp-content/uploads/2021/02/ejemplo.pdf",
-                    "caption": "Temario del Curso #001"
-                }
-            }
-    elif "4" in texto:
-        data={
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "audio",
-            "audio": {
-                "link": "https://filesamples.com/samples/audio/mp3/sample1.mp3"
-            }
-        }
-    elif "5" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "to": number,
-            "text": {
-                "preview_url": True,
-                "body": "Introduccion al curso! https://youtu.be/6ULOE2tGlBM"
-            }
-        }
-    elif "6" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "🤝 En breve me pondre en contacto contigo. 🤓"
-            }
-        }
-    elif "7" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "📅 Horario de Atención : Lunes a Viernes. \n🕜 Horario : 9:00 am a 5:00 pm 🤓"
-            }
-        }
-    elif "0" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "🚀 Hola, visita mi web anderson-bastidas.com para más información.\n \n📌Por favor, ingresa un número #️⃣ para recibir información.\n \n1️⃣. Información del Curso. ❔\n2️⃣. Ubicación del local. 📍\n3️⃣. Enviar temario en PDF. 📄\n4️⃣. Audio explicando curso. 🎧\n5️⃣. Video de Introducción. ⏯️\n6️⃣. Hablar con AnderCode. 🙋‍♂️\n7️⃣. Horario de Atención. 🕜 \n0️⃣. Regresar al Menú. 🕜"
-            }
-        }
-    elif "boton" in texto:
-        data = {
+    data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
             "to": number,
@@ -218,168 +113,49 @@ def enviar_mensajes_whatsapp(texto,number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "¿Confirmas tu registro?"
+                    "text": "¡Hola! ALEJANDRA ESTRADA nos contactamos de la empresa SCA SOLUCIONES EXPRESS. \n Te escribo para confirmar el servicio de transporte de IDA el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
                 },
                 "footer": {
-                    "text": "Selecciona una de las opciones"
+                    "text": "Desea confirmar el servicio"
                 },
                 "action": {
                     "buttons":[
                         {
                             "type": "reply",
                             "reply":{
-                                "id":"btnsi",
-                                "title":"Si"
+                                "id":"btnconfirmar",
+                                "title":"Confirmar"
                             }
                         },{
                             "type": "reply",
                             "reply":{
-                                "id":"btnno",
-                                "title":"No"
-                            }
-                        },{
-                            "type": "reply",
-                            "reply":{
-                                "id":"btntalvez",
-                                "title":"Tal Vez"
+                                "id":"btncancelar",
+                                "title":"Cancelar"
                             }
                         }
                     ]
                 }
-            }
-        }
-    elif "btnsi" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Muchas Gracias por Aceptar."
-            }
-        }
-    elif "btnno" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Es una Lastima."
-            }
-        }
-    elif "btntalvez" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Estare a la espera."
-            }
-        }
-    elif "lista" in texto:
-        data ={
-            "messaging_product": "whatsapp",
-            "to": number,
-            "type": "interactive",
-            "interactive":{
-                "type" : "list",
-                "body": {
-                    "text": "Selecciona Alguna Opción"
-                },
-                "footer": {
-                    "text": "Selecciona una de las opciones para poder ayudarte"
-                },
-                "action":{
-                    "button":"Ver Opciones",
-                    "sections":[
-                        {
-                            "title":"Compra y Venta",
-                            "rows":[
-                                {
-                                    "id":"btncompra",
-                                    "title" : "Comprar",
-                                    "description": "Compra los mejores articulos de tecnologia"
-                                },
-                                {
-                                    "id":"btnvender",
-                                    "title" : "Vender",
-                                    "description": "Vende lo que ya no estes usando"
-                                }
-                            ]
-                        },{
-                            "title":"Distribución y Entrega",
-                            "rows":[
-                                {
-                                    "id":"btndireccion",
-                                    "title" : "Local",
-                                    "description": "Puedes visitar nuestro local."
-                                },
-                                {
-                                    "id":"btnentrega",
-                                    "title" : "Entrega",
-                                    "description": "La entrega se realiza todos los dias."
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-        }
-    elif "btncompra" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Los mejos articulos top en ofertas."
-            }
-        }
-    elif "btnvender" in texto:
-        data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "Excelente elección."
-            }
-        }
-    else:
-        data={
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": "🚀 Hola, visita mi web anderson-bastidas.com para más información.\n \n📌Por favor, ingresa un número #️⃣ para recibir información.\n \n1️⃣. Información del Curso. ❔\n2️⃣. Ubicación del local. 📍\n3️⃣. Enviar temario en PDF. 📄\n4️⃣. Audio explicando curso. 🎧\n5️⃣. Video de Introducción. ⏯️\n6️⃣. Hablar con AnderCode. 🙋‍♂️\n7️⃣. Horario de Atención. 🕜 \n0️⃣. Regresar al Menú. 🕜"
             }
         }
 
-    #Convertir el diccionaria a formato JSON
     data=json.dumps(data)
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAAM1QqlQV90BO2QbeOuwedmZAgbAHfCnZBUmQsjP3phs4UEK2fRuYGbZBH7B8nEz3QhV4wt4NEhgfZCvUOQCxZAeNGnaZBBfmMA4ipeMiPD43d2gvxzMrebJm3hilKHcYwOCxZCZCcxJau1wrgugRGehuzs8ZC7jCHzr9lluJvcfUAiYwK5IuQGG7rd4Bz6MoZB902TGkIYdVZBEB1XGzfCOS1HxKccJiv4YLdGcUYZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBO3QqsIdGkiLLP7o1GSdfAMDX88y8jzn0RJJmAlcwtlZCMfIc6gOObu1svBg71UZBofsm3jtHcx0BYOWXjHVMK4YOgpAtyK00vMu1VLoqC1h8iX0obTsJIlzhZAvvT2tHIOGOqOtPfuXzGbyRvtVUZBXYBUlHofyWPcUlyXXT0jpBRjVHDvKt1eGoHGUd2e4LofC8JF2mO8iwcISFsKBGP4gZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
 
     try:
-        connection.request("POST","/v18.0/117721278011867/messages", data, headers)
+        connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        print(response.status, response.reason)
+        #respuesta=request.get_json()
+
+        return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
+
     except Exception as e:
-        agregar_mensajes_log(json.dumps(e))
+        agregra_mensajes_log(json.dumps(e))
     finally:
         connection.close()
 
