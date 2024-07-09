@@ -135,7 +135,7 @@ def enviar_mensajes_whatsapp(number):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBO14dybKf8i26DOHIzIpL9c3MCSI6umxRN1HiYw8a8RE9E7LEOUCw7ZBshoPjsdJpyr92Qz67HetCv9TSdgvDjwTZBdZCVvChNW5eHX6z8d2do9De92QCR3nTugtdfeJBJ4yUGy0lNNnSSewZCtztTwdVMMPNORJNuo3BPiPotmT984cRWrwF7lV1QlkYxUs6aZAZApm2w0W4cyTKjIhAb6wgZDZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBO3QqsIdGkiLLP7o1GSdfAMDX88y8jzn0RJJmAlcwtlZCMfIc6gOObu1svBg71UZBofsm3jtHcx0BYOWXjHVMK4YOgpAtyK00vMu1VLoqC1h8iX0obTsJIlzhZAvvT2tHIOGOqOtPfuXzGbyRvtVUZBXYBUlHofyWPcUlyXXT0jpBRjVHDvKt1eGoHGUd2e4LofC8JF2mO8iwcISFsKBGP4gZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
@@ -167,7 +167,7 @@ def recibir_respuesta(req):
     req=request.get_json()
     idWA=req['entry'][0]['changes'][0]['value']['messages'][0]['id'] 
 
-    return(json.dumps(req))
+    return(req)
               
 
 
