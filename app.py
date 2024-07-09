@@ -143,19 +143,15 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        req=request.get_json()
-
-        entry = req['entry'][0]
-        objeto_mensaje=entry['messages']
-
-
+        
+        ad=response.Body
 
 
         #agregra_mensajes_log(response)
         #return (response.status, response.reason)      
         #recibir_mensajes
-        #return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
-        return (json.dumps(objeto_mensaje))
+        return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
+        
     
 
         #print(response.status, response.reason)
