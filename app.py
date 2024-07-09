@@ -142,11 +142,8 @@ def enviar_mensajes_whatsapp(number):
 
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
-        response = connection.getresponse()   
-     
-        #agregra_mensajes_log(response)
-        #return (resp)      
-        #recibir_mensajes
+        response = connection.getresponse()
+
         return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
 
     except Exception as e:
