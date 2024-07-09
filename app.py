@@ -97,6 +97,7 @@ def recibir_mensajes(req):
 # enviar mensaje de plantilla para envio con boton
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
+    empresa="SCA SOLUCIONES EXPRESS"
     #texto = texto.lower()
     data = {
             "messaging_product": "whatsapp",
@@ -106,7 +107,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "¿Confirmas tu registro?"
+                    "text": "¡Hola! ALEJANDRA ESTRADA nos contactamos de la empresa SCA SOLUCIONES EXPRESS. \n Te escribo para confirmar el servicio de transporte de IDA el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
                 },
                 "footer": {
                     "text": "Selecciona una de las opciones"
@@ -149,7 +150,10 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
+        
+        recibir_mensajes
         return jsonify({"status": "enviado","code":200,"telefono":number})
+
         #print(response.status, response.reason)
     except Exception as e:
         agregra_mensajes_log(json.dumps(e))
