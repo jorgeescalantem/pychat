@@ -77,7 +77,8 @@ def recibir_mensajes(req):
             if "type" in messages:
                 tipo= messages["type"]                
                 if tipo == "interactive":
-                    agregra_mensajes_log(json.dumps(req))
+                    return 1
+                    #agregra_mensajes_log(json.dumps(req))
                 if "text" in messages:
                     text = messages["text"]["body"]
                     numero= messages["from"]
