@@ -77,7 +77,8 @@ def recibir_mensajes(req):
             if "type" in messages:
                 tipo= messages["type"]
                 #Guardar Log en la BD
-                agregra_mensajes_log(json.dumps(req))
+                #agregra_mensajes_log(json.dumps(req))
+                agregra_mensajes_log(jsonify(messages))
 
                 if tipo == "interactive":
                     tipo_interactivo = messages["interactive"]["type"]
@@ -90,10 +91,12 @@ def recibir_mensajes(req):
                     text = messages["text"]["body"]
                     numero= messages["from"]                    #chat= para["phone_number_id"]
 
-
-                    agregra_mensajes_log(json.dumps(text))
-                    agregra_mensajes_log(json.dumps(numero))
-                    agregra_mensajes_log(json.dumps(req))
+                    agregra_mensajes_log(jsonify(text))
+                    agregra_mensajes_log(jsonify(numero))
+                    agregra_mensajes_log(jsonify(req))
+                    #agregra_mensajes_log(json.dumps(text))
+                    #agregra_mensajes_log(json.dumps(numero))
+                    #agregra_mensajes_log(json.dumps(req))
                     #agregra_mensajes_log(json.dumps(objeto_para))
 
         return jsonify({'message':'EVENT_RECEIVED'})
@@ -138,7 +141,8 @@ def enviar_mensajes_whatsapp(number):
             }
         }
 
-    data=json.dumps(data)
+    #data=json.dumps(data)
+    data=jsonify(data)
 
     headers = {
         "Content-Type" : "application/json",
@@ -155,7 +159,7 @@ def enviar_mensajes_whatsapp(number):
         return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
 
     except Exception as e:
-        agregra_mensajes_log(json.dumps(e))
+        agregra_mensajes_log(jsonify(e))
     finally:
         connection.close()
 
