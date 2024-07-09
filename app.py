@@ -144,7 +144,10 @@ def enviar_mensajes_whatsapp(number):
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
         
-        ad=response.Body
+        resp=[]
+        resp.append(response)
+        
+        
 
 
         #agregra_mensajes_log(response)
