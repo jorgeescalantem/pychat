@@ -145,6 +145,9 @@ def enviar_mensajes_whatsapp(number):
         response = connection.getresponse()
         req=request.get_json()
 
+        entry = req['entry'][0]
+        objeto_mensaje=entry['messages']
+
 
 
 
@@ -152,7 +155,7 @@ def enviar_mensajes_whatsapp(number):
         #return (response.status, response.reason)      
         #recibir_mensajes
         #return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
-        return (json.dumps(req))
+        return (json.dumps(objeto_mensaje))
     
 
         #print(response.status, response.reason)
