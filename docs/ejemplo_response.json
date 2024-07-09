@@ -1,0 +1,14 @@
+{
+    "messaging_product": "whatsapp",
+    "contacts": [
+        {
+            "input": "573506138854",
+            "wa_id": "573506138854"
+        }
+    ],
+    "messages": [
+        {
+            "id": "wamid.HBgMNTczNTA2MTM4ODU0FQIAERgSQzBENkY5RTIwMTVEQzhCODgxAA=="
+        }
+    ]
+}

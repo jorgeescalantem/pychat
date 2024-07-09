@@ -143,11 +143,13 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        agregra_mensajes_log(response)
-        #return (response.status, response.reason)
+        recibir_respuesta
         
+        #agregra_mensajes_log(response)
+        #return (response.status, response.reason)
+       
         #recibir_mensajes
-        return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
+        #return jsonify({"status": response.status,"telefono":number,"reason":response.reason})
     
 
         #print(response.status, response.reason)
@@ -155,7 +157,11 @@ def enviar_mensajes_whatsapp(number):
         agregra_mensajes_log(json.dumps(e))
     finally:
         connection.close()
+def recibir_respuesta(req):
+    req=request.get_json()
 
+
+    return(req)
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
