@@ -75,8 +75,7 @@ def recibir_mensajes(req):
            # para=objeto_para[0]
             messages=objeto_mensaje[0]
             if "type" in messages:
-                tipo= messages["type"]
-                
+                tipo= messages["type"]                
                 if tipo == "interactive":
                     agregra_mensajes_log(json.dumps(req))
                 if "text" in messages:
@@ -110,27 +109,21 @@ def enviar_mensajes_whatsapp(number):
                     "text": "¡Hola! ALEJANDRA ESTRADA nos contactamos de la empresa SCA SOLUCIONES EXPRESS. \n Te escribo para confirmar el servicio de transporte de IDA el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
                 },
                 "footer": {
-                    "text": "Selecciona una de las opciones"
+                    "text": "Desea confirmar el servicio"
                 },
                 "action": {
                     "buttons":[
                         {
                             "type": "reply",
                             "reply":{
-                                "id":"btnsi",
-                                "title":"Si"
+                                "id":"btnconfirmar",
+                                "title":"Confirmar"
                             }
                         },{
                             "type": "reply",
                             "reply":{
-                                "id":"btnno",
-                                "title":"No"
-                            }
-                        },{
-                            "type": "reply",
-                            "reply":{
-                                "id":"btntalvez",
-                                "title":"Tal Vez"
+                                "id":"btncancelar",
+                                "title":"Cancelar"
                             }
                         }
                     ]
@@ -150,9 +143,10 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
+        #return (response.status, response.reason)
         
-        recibir_mensajes
-        return jsonify({"status": "enviado","code":200,"telefono":number})
+        #recibir_mensajes
+        return jsonify({"status": response.status,"code":200,"telefono":number,"reason":response.reason})
 
         #print(response.status, response.reason)
     except Exception as e:
