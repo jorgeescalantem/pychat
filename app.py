@@ -142,17 +142,11 @@ def enviar_mensajes_whatsapp(number):
 
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
-        response = connection.getresponse()
-        
-        agregra_mensajes_log(json.dumps(response))
-     
+        response = connection.getresponse()   
         #resp=[]
         #resp.append(response)
 
         #resp=json.dumps(data)
-
-        
-        
 
 
         #agregra_mensajes_log(response)
@@ -167,12 +161,13 @@ def enviar_mensajes_whatsapp(number):
         agregra_mensajes_log(json.dumps(e))
     finally:
         connection.close()
-IDWAsh=""
+
+@app.route("/res",methods=["POST", "GET"] )
 def recibir_respuesta(req):
     req=request.get_json()
     idWA=req['entry'][0]['changes'][0]['value']['messages'][0]['id'] 
 
-    IDWAsh=idWA
+    return(json.dumps(req))
               
 
 
