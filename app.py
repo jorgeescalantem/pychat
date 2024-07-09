@@ -95,7 +95,7 @@ def recibir_mensajes(req):
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
-@app.route("/send/<tel>",methods=["POST", "GET"] )
+@app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(texto,number):
     texto = texto.lower()
     data = {
