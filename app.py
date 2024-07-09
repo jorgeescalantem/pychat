@@ -2,8 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
-
-
+import http.client
 
 
 
@@ -91,17 +90,71 @@ def recibir_mensajes(req):
                     agregra_mensajes_log(json.dumps(req))
                     #agregra_mensajes_log(json.dumps(objeto_para))
 
-
-
-
-
-
-           
-
         return jsonify({'message':'EVENT_RECEIVED'})
 
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
-  
+# enviar mensaje de plantilla para envio con boton
+@app.route("/send/<tel>",methods=["POST", "GET"] )
+def enviar_mensajes_whatsapp(texto,number):
+    texto = texto.lower()
+    data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": number,
+            "type": "interactive",
+            "interactive":{
+                "type":"button",
+                "body": {
+                    "text": "¿Confirmas tu registro?"
+                },
+                "footer": {
+                    "text": "Selecciona una de las opciones"
+                },
+                "action": {
+                    "buttons":[
+                        {
+                            "type": "reply",
+                            "reply":{
+                                "id":"btnsi",
+                                "title":"Si"
+                            }
+                        },{
+                            "type": "reply",
+                            "reply":{
+                                "id":"btnno",
+                                "title":"No"
+                            }
+                        },{
+                            "type": "reply",
+                            "reply":{
+                                "id":"btntalvez",
+                                "title":"Tal Vez"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+    data=json.dumps(data)
+
+    headers = {
+        "Content-Type" : "application/json",
+        "Authorization" : "Bearer EAARsJaQdFWwBO14dybKf8i26DOHIzIpL9c3MCSI6umxRN1HiYw8a8RE9E7LEOUCw7ZBshoPjsdJpyr92Qz67HetCv9TSdgvDjwTZBdZCVvChNW5eHX6z8d2do9De92QCR3nTugtdfeJBJ4yUGy0lNNnSSewZCtztTwdVMMPNORJNuo3BPiPotmT984cRWrwF7lV1QlkYxUs6aZAZApm2w0W4cyTKjIhAb6wgZDZD"
+    }
+
+    connection = http.client.HTTPSConnection("graph.facebook.com")
+
+    try:
+        connection.request("POST","/v19.0/117168924654185/messages", data, headers)
+        response = connection.getresponse()
+        print(response.status, response.reason)
+    except Exception as e:
+        agregra_mensajes_log(json.dumps(e))
+    finally:
+        connection.close()
+
+
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
