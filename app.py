@@ -143,7 +143,7 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        agregra_mensajes_log(json.dumps(response))
+        agregra_mensajes_log(response)
         #return (response.status, response.reason)
         
         #recibir_mensajes
