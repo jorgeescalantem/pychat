@@ -116,7 +116,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": empresa+"¡Hola! **ALEJANDRA ESTRADA** nos contactamos de la empresa SCA SOLUCIONES EXPRESS. \n Te escribo para confirmar el servicio de transporte de IDA el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
+                    "text": "Confirmacion servicio:\n¡Hola! *ALEJANDRA ESTRADA* nos contactamos de la empresa "+empresa+". \n Te escribo para confirmar el servicio de transporte de *IDA* el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
