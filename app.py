@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import http.client
+import json
 
 
 
@@ -76,8 +77,8 @@ def recibir_mensajes(req):
             if "type" in messages:
                 tipo= messages["type"]
                 #Guardar Log en la BD
-                #agregra_mensajes_log(json.dumps(req))
-                agregra_mensajes_log(jsonify(messages))
+                agregra_mensajes_log(json.dumps(req))
+                #agregra_mensajes_log(jsonify(messages))
 
                 if tipo == "interactive":
                     tipo_interactivo = messages["interactive"]["type"]
@@ -90,12 +91,12 @@ def recibir_mensajes(req):
                     text = messages["text"]["body"]
                     numero= messages["from"]                    #chat= para["phone_number_id"]
 
-                    agregra_mensajes_log(jsonify(text))
-                    agregra_mensajes_log(jsonify(numero))
-                    agregra_mensajes_log(jsonify(req))
-                    #agregra_mensajes_log(json.dumps(text))
-                    #agregra_mensajes_log(json.dumps(numero))
-                    #agregra_mensajes_log(json.dumps(req))
+                    #agregra_mensajes_log(jsonify(text))
+                    #agregra_mensajes_log(jsonify(numero))
+                    #agregra_mensajes_log(jsonify(req))
+                    agregra_mensajes_log(json.dumps(text))
+                    agregra_mensajes_log(json.dumps(numero))
+                    agregra_mensajes_log(json.dumps(req))
                     #agregra_mensajes_log(json.dumps(objeto_para))
 
         return jsonify({'message':'EVENT_RECEIVED'})
@@ -140,8 +141,8 @@ def enviar_mensajes_whatsapp(number):
             }
         }
 
-    #data=json.dumps(data)
-    data=jsonify(data)
+    data=json.dumps(data)
+    #data=jsonify(data)
 
     headers = {
         "Content-Type" : "application/json",
