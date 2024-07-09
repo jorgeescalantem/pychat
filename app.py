@@ -96,8 +96,8 @@ def recibir_mensajes(req):
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
 @app.route("/send/<number>",methods=["POST", "GET"] )
-def enviar_mensajes_whatsapp(texto,number):
-    texto = texto.lower()
+def enviar_mensajes_whatsapp(number):
+    #texto = texto.lower()
     data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
