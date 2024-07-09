@@ -154,14 +154,5 @@ def enviar_mensajes_whatsapp(number):
     finally:
         connection.close()
 
-@app.route("/res",methods=["POST", "GET"] )
-def recibir_respuesta(req):
-    req=request.get_json()
-    idWA=req['entry'][0]['changes'][0]['value']['messages'][0]['id'] 
-
-    return("ok")
-              
-
-
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
