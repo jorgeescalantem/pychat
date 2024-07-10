@@ -155,29 +155,31 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
+        dataext=request.get_json()
         
         if response.status == 200:
             
-            product=response["messaging_product"]
-            contacts=response["contacts"]
-            imputs=contacts[0]["input"]
-            wa_id=contacts[0]["wa_id"]
+            product=dataext["messaging_product"]
+            product1=(json.dumps(product))
+            #contacts=response["contacts"]
+            #imputs=contacts[0]["input"]
+            #wa_id=contacts[0]["wa_id"]
 
-            messages=response["messages"]
-            id=messages[0]["id"]
-            stado=messages[0]["message_status"]
+            #messages=response["messages"]
+            #id=messages[0]["id"]
+            #stado=messages[0]["message_status"]
             #type(respuesta1)
             if len (id) != 0:
                 #ll=len(respuesta1)
                 rp="respuesta ID"
-                agregra_mensajes_log(json.dumps(respuesta1))
+                agregra_mensajes_log(json.dumps(product))
             else:
                 rp="respuesta sin ID"
         elif response.status == 500:
             rp="respuesta status 500"
         else:    
             rp="respuesta status 500"
-        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":id})
+        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":product1})
 
     except Exception as e:
         agregra_mensajes_log(json.dumps(e))
