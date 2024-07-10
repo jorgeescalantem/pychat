@@ -157,13 +157,9 @@ def enviar_mensajes_whatsapp(number):
         response = connection.getresponse()
         
         if response.status == 200:
-            class resp(BaseModel):
-                id
             
-            respor=resp(response)
-            #respuesta1=response['entry'][0]['changes'][0]['value']['messages'][0]['from']
-            respuesta1=resp.model_dump(respor)
-            type(respuesta1)
+            respuesta1=jsonify(response)
+            #type(respuesta1)
             if len (respuesta1) != 0:
                 #ll=len(respuesta1)
                 rp="respuesta ID"
