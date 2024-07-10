@@ -106,7 +106,7 @@ def recibir_mensajes(req):
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
 @app.route("/send/<number>",methods=["POST", "GET"] )
-def enviar_mensajes_whatsapp(number):
+def enviar_mensajes_whatsapp(number,req):
     empresa="SCA SOLUCIONES EXPRESS"
     #texto = texto.lower()
     data = {
@@ -155,11 +155,11 @@ def enviar_mensajes_whatsapp(number):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        dataext=connection.json()
+        req = request.get_json()
         
         if response.status == 200:
             
-            product=dataext["messaging_product"]
+            product=req["messaging_product"]
             product1=(json.dumps(product))
             #contacts=response["contacts"]
             #imputs=contacts[0]["input"]
