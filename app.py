@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import http.client
 import json
+#from pydantic import BaseModel, PositiveInt
 
 
 
@@ -157,11 +158,12 @@ def enviar_mensajes_whatsapp(number):
         if response.status == 200:
             
             #respuesta1=response['entry'][0]['changes'][0]['value']['messages'][0]['from']
-            respuesta1 = response.text
+            respuesta1 = json.dumps(response)
             type(respuesta1)
             if len (respuesta1) != 0:
                 #ll=len(respuesta1)
                 rp="respuesta ID"
+                agregra_mensajes_log(json.dumps(respuesta1))
             else:
                 rp="respuesta sin ID"
         elif response.status == 500:
