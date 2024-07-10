@@ -160,7 +160,7 @@ def enviar_mensajes_whatsapp(number):
             respuesta1 = response.text
             type(respuesta1)
             if len (respuesta1) != 0:
-                ll=len(respuesta1)
+                #ll=len(respuesta1)
                 rp="respuesta ID"
             else:
                 rp="respuesta sin ID"
@@ -168,7 +168,7 @@ def enviar_mensajes_whatsapp(number):
             rp="respuesta status 500"
         else:    
             rp="respuesta status 500"
-        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"len":ll,"rp ciclo":rp})
+        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp})
 
     except Exception as e:
         agregra_mensajes_log(json.dumps(e))
