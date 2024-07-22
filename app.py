@@ -9,13 +9,7 @@ from pydantic import BaseModel, PositiveInt
 
 app = Flask(__name__)
 
-import mysql.connector
-mydb = mysql.connector.connect(
-        host = "pychat.informaticaf5.com",
-        user = "tecJa7_TecJa7",
-        password = "Dlvb47&45",
-        database='tecJa7_pychat'
-      )
+
 
 
 #CONFIGURACION de la base de datos SQL lite
@@ -116,6 +110,13 @@ def recibir_mensajes(req):
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
 def mensaje_enviado(number,code,reason):
+    import mysql.connector
+    mydb = mysql.connector.connect(
+        host = "pychat.informaticaf5.com",
+        user = "tecJa7_TecJa7",
+        password = "Dlvb47&45",
+        database='tecJa7_pychat'
+      )
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d_%H:%M:%S")
     bearer="beareadadadadad"
@@ -124,8 +125,6 @@ def mensaje_enviado(number,code,reason):
     sql = "INSERT INTO registro (fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from, profile_name,key,mensaje,status,estado,bearer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     data=(now,text,"null","null","null","null","null",number,"profile",reason,code,"send",bearer)
     mycursor.execute(sql, data)
-
-
     #mycursor.execute(sql)
     mydb.commit()
     mycursor.close()
