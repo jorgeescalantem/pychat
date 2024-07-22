@@ -8,6 +8,7 @@ greenlet==3.0.3
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
+mysql-connector-python==9.0.0
 pydantic==2.8.2
 pydantic_core==2.20.1
 SQLAlchemy==2.0.31
