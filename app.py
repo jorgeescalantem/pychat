@@ -115,6 +115,22 @@ def recibir_mensajes(req):
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
+def mensaje_enviado(response,number,code):
+    now = datetime.now()
+    dt_string = now.strftime("%Y-%m-%d_%H:%M:%S")
+
+    mycursor = mydb.cursor()
+    text="texto por capturar de prueba"
+    sql = ("INSERT INTO registro"+ 
+      "(fecha_hora,mensaje_enviado,telefono_wa,status) VALUES "+
+      "('"+dt_string+"'   ,'"+text+"','"+number+"' ,'"+code+"');")
+    
+    mycursor.execute(sql)
+    mydb.commit()
+
+
+    return("guardado")
+
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     empresa="SCA SOLUCIONES EXPRESS"
@@ -167,11 +183,15 @@ def enviar_mensajes_whatsapp(number):
         response = connection.getresponse()
         #req = request.get_json()
         #req=response.getheader()
-        recibir_mensajes(response)
+        
+        #recibir_mensajes(response)
         #docs_dict = [response.to_json() for doc in response]
+        code=response.status
         
         
         if response.status == 200:
+            mensaje_enviado(response,number,code)    
+                
             
             #product=response["messaging_product"]
             #product1=(json.dumps(product))
@@ -185,10 +205,10 @@ def enviar_mensajes_whatsapp(number):
             #type(respuesta1)
             #if len (docs_dict) != 0:
                 #ll=len(respuesta1)
-                rp="respuesta ID"
+            rp="respuesta ID"
                 #agregra_mensajes_log(json.dumps(docs_dict))
             #else:
-                rp="respuesta sin ID"
+                #rp="respuesta sin ID"
         elif response.status == 500:
             rp="respuesta status 500"
         else:    
