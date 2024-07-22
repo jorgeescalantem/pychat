@@ -7,17 +7,8 @@ from pydantic import BaseModel, PositiveInt
 
 
 
+
 app = Flask(__name__)
-
-import mysql.connector
-mydb = mysql.connector.connect(
-        host = "pychat.informaticaf5.com",
-        user = "tecJa7_TecJa7",
-        password = "Dlvb47&45",
-        database='tecJa7_pychat'
-      )
-
-
 #CONFIGURACION de la base de datos SQL lite
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///metapython.db"
 app.config['SQLLCHEMY_TRACK_MODIFICATIONS'] = False
