@@ -158,12 +158,13 @@ def enviar_mensajes_whatsapp(number):
         #req = request.get_json()
         #req=response.getheader()
         recibir_mensajes(response)
+        docs_dict = [response.to_json() for doc in response]
         
         
         if response.status == 200:
             
-            product=response["messaging_product"]
-            product1=(json.dumps(product))
+            #product=response["messaging_product"]
+            #product1=(json.dumps(product))
             #contacts=response["contacts"]
             #imputs=contacts[0]["input"]
             #wa_id=contacts[0]["wa_id"]
@@ -172,10 +173,10 @@ def enviar_mensajes_whatsapp(number):
             #id=messages[0]["id"]
             #stado=messages[0]["message_status"]
             #type(respuesta1)
-            if len (id) != 0:
+            if len (docs_dict) != 0:
                 #ll=len(respuesta1)
                 rp="respuesta ID"
-                agregra_mensajes_log(json.dumps(product))
+                agregra_mensajes_log(json.dumps(docs_dict))
             else:
                 rp="respuesta sin ID"
         elif response.status == 500:
