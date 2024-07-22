@@ -147,7 +147,7 @@ def enviar_mensajes_whatsapp(number,req):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBO2ZCz3VZA83Xd9t5svZC5AmLSPKGYEdOMhkvb9c8W9VefPgur4775VY0Ly6sWUxsLIOhBhAK2tzP4w1bF79gctg9SgOVF2fAc4hE9K8E6PJvcSAUtFyejlBAw380uCgXzZCjZBHhZBeG1I6OVk7M1ElJZCyDR6BopC1ZCiMHOVLfSuIyx50xUxuwwXryVp63NZCyEbchvULPxPSWXo0NZAPMWD1QZDZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBOzdyhG4WqdBNsAmk9h7lZAQW7GCEzRxdPBI1JfELdVfah7Xv0XdfVTGIGOFSvHjTTruy46umYzOTxCSQbOO3UFjqAVfOW06l3Afz2fayt2ugmxqijcN1yIQGrDPban6ms8WcwWXmRnX0rAZBkwBeybcWQX7esCVB7RWZCydeFM9SkzHaga1OKwqrGS60TL66ZAb6qh3BuoWmnltqZAo2Jr0QZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
@@ -155,7 +155,8 @@ def enviar_mensajes_whatsapp(number,req):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        req = request.get_json()
+        #req = request.get_json()
+        resp=response.getcode
         
         if response.status == 200:
             
