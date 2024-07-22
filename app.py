@@ -121,12 +121,16 @@ def mensaje_enviado(number,code,reason):
     bearer="beareadadadadad"
     mycursor = mydb.cursor()
     text="texto por capturar de prueba"
-    sql = ("INSERT INTO registro"+ 
-      "(fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from, profile_name,key,mensaje,status,estado,bearer) VALUES "+
-      "('"+dt_string+"','"+text+"','"+text+"','"+number+"','"+number+"','"+number+"','"+number+"','"+code+"','"+reason+"','"+bearer+"');")
-    
-    mycursor.execute(sql)
+    sql = "INSERT INTO registro (fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from, profile_name,key,mensaje,status,estado,bearer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    data=(now,text,"null","null","null","null","null",number,"profile",reason,code,"send",bearer)
+    mycursor.execute(sql, data)
+
+
+    #mycursor.execute(sql)
     mydb.commit()
+    mycursor.close()
+    mydb.close()
+
 
 
     return("guardado")
