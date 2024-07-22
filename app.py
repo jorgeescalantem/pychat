@@ -162,7 +162,7 @@ def enviar_mensajes_whatsapp(number):
         
         if response.status == 200:
             
-            product=req["messaging_product"]
+            product=response["messaging_product"]
             product1=(json.dumps(product))
             #contacts=response["contacts"]
             #imputs=contacts[0]["input"]
