@@ -155,8 +155,8 @@ def enviar_mensajes_whatsapp(number,req):
     try:
         connection.request("POST","/v19.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
-        #req = request.get_json()
-        resp=response.getcode
+        req = request.get_json()
+        
         
         if response.status == 200:
             
