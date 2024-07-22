@@ -118,12 +118,12 @@ def recibir_mensajes(req):
 def mensaje_enviado(number,code,reason):
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d_%H:%M:%S")
-
+    bearer="beareadadadadad"
     mycursor = mydb.cursor()
     text="texto por capturar de prueba"
     sql = ("INSERT INTO registro"+ 
-      "(fecha_hora,mensaje_enviado,telefono_wa,status) VALUES "+
-      "('"+dt_string+"'   ,'"+text+"','"+number+"' ,'"+code+"');")
+      "(fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from, profile_name,key,mensaje,status,estado,bearer) VALUES "+
+      "('"+dt_string+"','"+text+"','"+text+"','"+number+"','"+number+"','"+number+"','"+number+"','"+code+"','"+reason+"','"+bearer+"');")
     
     mycursor.execute(sql)
     mydb.commit()
