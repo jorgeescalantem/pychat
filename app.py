@@ -108,8 +108,8 @@ def recibir_mensajes(req):
 
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
-# enviar mensaje de plantilla para envio con boton
-def mensaje_enviado(number,code,reason):
+# enviar mensaje de plantilla para envio con boton number,code,reason
+def mensaje_enviado():
     import mysql.connector
     mydb = mysql.connector.connect(
         host = "pychat.informaticaf5.com",
@@ -121,10 +121,23 @@ def mensaje_enviado(number,code,reason):
     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
     #dateac=dt_string
     bearer="beareadadadadad"
+    numero="3561338854"
     mycursor = mydb.cursor()
     text="texto por capturar de prueba"
     sql = "INSERT INTO registro (fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from,profile_name,key,mensaje,status,estado,bearer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"
-    data=(dt_string,text,"null","null","null","null","null",number,"profile",reason,code,"send",bearer)
+    data=(dt_string,
+          text,
+          "null"
+          ,"null"
+          ,"null"
+          ,"null"
+          ,"null"
+          ,numero
+          ,"profile"
+          ,"key200"
+          ,"200"
+          ,"send"
+          ,bearer)
     mycursor.execute(sql, data)
     #mycursor.execute(sql)
     mydb.commit()
@@ -195,7 +208,7 @@ def enviar_mensajes_whatsapp(number):
         
         
         if response.status == 200:
-            mensaje_enviado(number,code,reason)    
+            mensaje_enviado()    
                 
             
             #product=response["messaging_product"]
