@@ -115,7 +115,7 @@ def recibir_mensajes(req):
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton
-def mensaje_enviado(response,number,code):
+def mensaje_enviado(number,code,reason):
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d_%H:%M:%S")
 
@@ -187,10 +187,11 @@ def enviar_mensajes_whatsapp(number):
         #recibir_mensajes(response)
         #docs_dict = [response.to_json() for doc in response]
         code=response.status
+        reason=response.reason
         
         
         if response.status == 200:
-            mensaje_enviado(response,number,code)    
+            mensaje_enviado(number,code,reason)    
                 
             
             #product=response["messaging_product"]
