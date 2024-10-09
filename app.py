@@ -125,7 +125,7 @@ def mensaje_enviado():
     mycursor = mydb.cursor()
     text="texto por capturar de prueba"
     sql = "INSERT INTO registro (fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from,profile_name,key,mensaje,status,estado,bearer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"
-    data=(dt_string,
+    data=(1,dt_string,
           text,
           "null"
           ,"null"
@@ -190,7 +190,7 @@ def enviar_mensajes_whatsapp(number):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBOzdyhG4WqdBNsAmk9h7lZAQW7GCEzRxdPBI1JfELdVfah7Xv0XdfVTGIGOFSvHjTTruy46umYzOTxCSQbOO3UFjqAVfOW06l3Afz2fayt2ugmxqijcN1yIQGrDPban6ms8WcwWXmRnX0rAZBkwBeybcWQX7esCVB7RWZCydeFM9SkzHaga1OKwqrGS60TL66ZAb6qh3BuoWmnltqZAo2Jr0QZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBOzZAcUkNMc9ZAceR5DZCT9REecNXgrLyaNP5o9QYwqqafGbYZBmmnC5FgGjZBpvGCTplP3hbkBg7kslDpyZAVTpdf6jg7NrIgFpczEIZCqigX2ZCpGYE3KrGuB4Wot63GzzvljLEOKT3KTUmYifSiM901brqjogISiikaYxuJPDXyfcZBQOJZByUyydSt2lZC8GyoDKZCnXqwhzjZBtqH0R7oXiQyiOy2Nr1mkY8ZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
