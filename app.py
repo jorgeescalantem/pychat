@@ -194,44 +194,12 @@ def enviar_mensajes_whatsapp(number):
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
-
     try:
-        connection.request("POST","/v19.0/117168924654185/messages", data, headers)
+        connection.request("POST","/v18.0/117721278011867/messages", data, headers)
         response = connection.getresponse()
-       
-        code=response.status
-        reason=response.reason
-        
-        
-        if response.status == 200:
-            mensaje_enviado()    
-                
-            
-            #product=response["messaging_product"]
-            #product1=(json.dumps(product))
-            #contacts=response["contacts"]
-            #imputs=contacts[0]["input"]
-            #wa_id=contacts[0]["wa_id"]
-
-            #messages=response["messages"]
-            #id=messages[0]["id"]
-            #stado=messages[0]["message_status"]
-            #type(respuesta1)
-            #if len (docs_dict) != 0:
-                #ll=len(respuesta1)
-            rp="respuesta ID"
-                #agregra_mensajes_log(json.dumps(docs_dict))
-            #else:
-                #rp="respuesta sin ID"
-        elif response.status == 500:
-            rp="respuesta status 500"
-        else:    
-            rp="respuesta status 500"
-        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp})
-
+        print(response.status, response.reason)
     except Exception as e:
-        textp="excepcion"
-        agregra_mensajes_log(json.dumps(textp))
+        agregar_mensajes_log(json.dumps(e))
     finally:
         connection.close()
 
