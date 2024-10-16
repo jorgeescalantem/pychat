@@ -150,11 +150,11 @@ def mensaje_enviado():
 
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
-    empresa="SCA SOLUCIONES EXPRESS"
+    #empresa="SCA SOLUCIONES EXPRESS"
     #texto = texto.lower()
     data = request.get_json()
 
-    #data=json.dumps(data)
+    data=json.dumps(data)
     #data=jsonify(data)
 
     headers = {
