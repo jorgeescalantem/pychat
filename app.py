@@ -162,8 +162,16 @@ def enviar_mensajes_whatsapp(number):
     }
 
     url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+
+    try:
     response = requests.request("POST", url, headers=headers, data=data)
     text= response.text
-    return("enviado")
+    return jsonify({'message':text})
+    agregar_mensajes_log(json.dumps(text))
+    except Exception as e:
+        agregar_mensajes_log(json.dumps(e))
+    finally:
+        response.close()
+
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
