@@ -166,22 +166,24 @@ def enviar_mensajes_whatsapp(number):
     try:
         response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code
-        data= response.json()
-
-        contacts=data["contacts"]
-        wa_id=contacts[0]["wa_id"]
-
-        messages=data["messages"]
-        id=messages[0]["id"]
-        stado=messages[0]["message_status"]
-             
-
         
-        
-        return jsonify({'message':"enviado","estado":st,"idWA":id,"estado_msg":stado,"contacto":wa_id})
+        if st == 200:
+            data= response.json()
+            # respuesta datos de contacto
+            contacts=data["contacts"]
+            wa_id=contacts[0]["wa_id"]
+            imputs=contacts[0]["input"]
+            # respuesta id de whatsapp
+            messages=data["messages"]
+            id=messages[0]["id"]        
+            return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
+        elif st == 401:
+            return jsonify({'message':"no enviado token")
+        else:
+            return jsonify({'message':"no enviado red")
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
-        agregar_mensajes_log(json.dumps(e))
+        return jsonify({'message':"no enviado")
     finally:
         response.close()
 
