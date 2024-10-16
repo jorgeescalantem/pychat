@@ -178,12 +178,12 @@ def enviar_mensajes_whatsapp(number):
             id=messages[0]["id"]        
             return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
-            return jsonify({'message':"no enviado token")
+            return jsonify({'message':"no enviado token"})
         else:
-            return jsonify({'message':"no enviado red")
+            return jsonify({'message':"no enviado red"})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
-        return jsonify({'message':"no enviado")
+        return jsonify({'message':"no enviado"})
     finally:
         response.close()
 
