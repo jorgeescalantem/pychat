@@ -152,40 +152,9 @@ def mensaje_enviado():
 def enviar_mensajes_whatsapp(number):
     empresa="SCA SOLUCIONES EXPRESS"
     #texto = texto.lower()
-    data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "interactive",
-            "interactive":{
-                "type":"button",
-                "body": {
-                    "text": "Confirmacion servicio:\n¡Hola! *ALEJANDRA ESTRADA* nos contactamos de la empresa "+empresa+". \n Te escribo para confirmar el servicio de transporte de *IDA* el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
-                },
-                "footer": {
-                    "text": "Desea confirmar el servicio"
-                },
-                "action": {
-                    "buttons":[
-                        {
-                            "type": "reply",
-                            "reply":{
-                                "id":"btnconfirmar",
-                                "title":"Confirmar"
-                            }
-                        },{
-                            "type": "reply",
-                            "reply":{
-                                "id":"btncancelar",
-                                "title":"Cancelar"
-                            }
-                        }
-                    ]
-                }
-            }
-        }
+    data = request.get_json()
 
-    data=json.dumps(data)
+    #data=json.dumps(data)
     #data=jsonify(data)
 
     headers = {
