@@ -167,7 +167,7 @@ def enviar_mensajes_whatsapp(number):
         connection.request("POST","/v20.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
         #print(response.status, response.reason)
-        recibir_mensajes(response.text)
+        agregar_mensajes_log(response.text)
         docs_dict = [response.to_json() for doc in response]
 
         if response.status == 200:
@@ -183,6 +183,7 @@ def enviar_mensajes_whatsapp(number):
         return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":product1})        
 
     except Exception as e:
+        agregar_mensajes_log(json.dumps(e))
         return jsonify({'message':'EXCEP'})
     finally:
         connection.close()
