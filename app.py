@@ -190,7 +190,7 @@ def enviar_mensajes_whatsapp(number):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBOxWP3mzaNQNPmuCvq5ZAeYCF3X4k8RavIkcHNqi47e5D8R6H4AqQk3ZCZAvvsUgGoLN73fU3JnJDjPguAJya4jdKOHtNhJ3f9NBvbPahwj3i4KDwFYf5aXcNWyztag0906w3zWUeT0TE16oIekXjSSvLTJawf6ZAnpM5QLhtAZCj64kZByugjtZBrSRBdZAfUBXM3OrQSL0K4WjDZCWLrLDuwZAfLDCPicg7cZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBOxGhnIYpPoTk9VKcHcI2ThcHr7B23uSADlGCtOQtRvlHOM9MqU4R2cft0qWcn6PV4wgAOZA0ZCXPHDQhYLTD0p5Omhhbg04A0DcXjbULP0uVGfIXu3y0dwx0PsKqcZC0ITQ6Ffnjg7ZAvEhZCIHp4DHOZCQj5sZA2Yz2XHOw4nkFIUILaLLCyh2R5pSfQqJOKu5SaUBF4BY77xGMNZBxnLHkZApj0ghZBkmAZDZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
@@ -214,7 +214,7 @@ def enviar_mensajes_whatsapp(number):
         return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":product1})        
 
     except Exception as e:
-        agregar_mensajes_log(json.dumps(e))
+        agregar_mensajes_log("excep")
     finally:
         connection.close()
 
