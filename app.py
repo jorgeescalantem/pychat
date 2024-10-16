@@ -167,11 +167,14 @@ def enviar_mensajes_whatsapp(number):
         response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code
         data= response.json()
-        idWA=data['messages']['id']      
+        messages=data["messages"]
+        id=messages[0]["id"]
+        stado=messages[0]["message_status"]
+             
 
         
         
-        return jsonify({'message':"enviado","estado":st,"idWA":idWA})
+        return jsonify({'message':"enviado","estado":st,"idWA":id})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
         agregar_mensajes_log(json.dumps(e))
