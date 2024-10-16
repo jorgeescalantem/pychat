@@ -162,20 +162,9 @@ def enviar_mensajes_whatsapp(number):
         "Authorization" : "Bearer EAARsJaQdFWwBOZBZBWLI0nkgA7FBAfvJ63ANIKS9WSPYvc900vZAP43k1rqpKhoVLUXYJ8Wc7itw7gatQt3ZAeZAJhDgNbqTJmZAulWOrdJR1TO96LVzfNFgQsfLGtB1I3ZCs41P7sr6PPtdQCZB7xlFM5NcRwrSZBzxh4EBn6AHyUF5wh8VoMgBCZCusccch9wv92UPUG8sFLP2fZBXLq4LZAyVqazfpbSzv8rExamTZAC9S9goZD"
     }
 
-    connection = http.client.HTTPSConnection("graph.facebook.com")
-    try:
-        connection.request("POST","/v20.0/117168924654185/messages", data, headers)
-        response = connection.getresponse()
-        datas=response.read()
-        datasdecode=datas.decode("utf-8")
-        #print(response.status, response.reason)
-        agregar_mensajes_log(json.dumps(datasdecode))
-        
-    except Exception as e:
-        #agregar_mensajes_log(json.dumps(e))
-        return jsonify({'message':'EXCEP'})
-    finally:
-        connection.close()
-
+    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+    response = requests.request("POST", url, headers=headers, data=data)
+    text= response.text
+    return("enviado")
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
