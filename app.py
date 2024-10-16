@@ -167,7 +167,7 @@ def enviar_mensajes_whatsapp(number):
         response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code
         data= response.json()
-        idWA=data['entry'][0]['changes'][0]['value']['messages'][0]['id']      
+        idWA=data['messages']['id']      
 
         
         
