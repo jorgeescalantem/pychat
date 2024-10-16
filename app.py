@@ -168,14 +168,17 @@ def enviar_mensajes_whatsapp(number):
         st=response.status_code
         data= response.json()
 
+        contacts=response["contacts"]
+        wa_id=contacts[0]["wa_id"]
+
         messages=data["messages"]
         id=messages[0]["id"]
-        #stado=messages[0]["message_status"]
+        stado=messages[0]["message_status"]
              
 
         
         
-        return jsonify({'message':"enviado","estado":st,"idWA":id})
+        return jsonify({'message':"enviado","estado":st,"idWA":id,"estado_msg"stado,"contacto":wa_id})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
         agregar_mensajes_log(json.dumps(e))
