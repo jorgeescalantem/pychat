@@ -198,7 +198,7 @@ def enviar_mensajes_whatsapp(number):
         connection.request("POST","/v20.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
         #print(response.status, response.reason)
-        recibir_mensajes(response)
+        recibir_mensajes(response.text)
         docs_dict = [response.to_json() for doc in response]
 
         if response.status == 200:
