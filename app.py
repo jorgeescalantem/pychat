@@ -214,7 +214,7 @@ def enviar_mensajes_whatsapp(number):
         return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":product1})        
 
     except Exception as e:
-        agregar_mensajes_log("excep")
+        return jsonify({'message':'EXCEP'})
     finally:
         connection.close()
 
