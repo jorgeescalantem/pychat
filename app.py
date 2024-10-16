@@ -178,7 +178,7 @@ def enviar_mensajes_whatsapp(number):
 
         
         
-        return jsonify({'message':"enviado","estado":st,"idWA":id,"estado_msg"stado,"contacto":wa_id})
+        return jsonify({'message':"enviado","estado":st,"idWA":id,"estado_msg":stado,"contacto":wa_id})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
         agregar_mensajes_log(json.dumps(e))
