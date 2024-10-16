@@ -168,7 +168,7 @@ def enviar_mensajes_whatsapp(number):
         st=response.status_code
         data= response.json()
 
-        contacts=response["contacts"]
+        contacts=data["contacts"]
         wa_id=contacts[0]["wa_id"]
 
         messages=data["messages"]
