@@ -190,12 +190,12 @@ def enviar_mensajes_whatsapp(number):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBO5OZChZAisH9BQ8N8cghI3ZBsS5DJSkjdCZBiZBZCEJhCCMX1y6b0uZAdMzVaqUjQ8YvKZBVhZAfv2W0K9ibzZARdfgJ5y2YuZCaPmc2skgtFZBgZBOimzym3rZAjgG6GZB2W6b9nIlKf5HYCIaOoqPYNNph6a2q8ii95tvZBlilCxy5ZBqChQDnRb1gh3hhkmYmGYj8nDGTRSINPKj9WUh0RHZAqSZCtRyLvY1XtcgXgZDZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBOxWP3mzaNQNPmuCvq5ZAeYCF3X4k8RavIkcHNqi47e5D8R6H4AqQk3ZCZAvvsUgGoLN73fU3JnJDjPguAJya4jdKOHtNhJ3f9NBvbPahwj3i4KDwFYf5aXcNWyztag0906w3zWUeT0TE16oIekXjSSvLTJawf6ZAnpM5QLhtAZCj64kZByugjtZBrSRBdZAfUBXM3OrQSL0K4WjDZCWLrLDuwZAfLDCPicg7cZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
     try:
-        connection.request("POST","/v18.0/117721278011867/messages", data, headers)
+        connection.request("POST","/v20.0/117168924654185/messages", data, headers)
         response = connection.getresponse()
         print(response.status, response.reason)
     except Exception as e:
