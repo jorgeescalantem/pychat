@@ -9,13 +9,10 @@ import requests
 app = Flask(__name__)
 
 
-
-
 #CONFIGURACION de la base de datos SQL lite
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///metapython.db"
 app.config['SQLLCHEMY_TRACK_MODIFICATIONS'] = False
 db=SQLAlchemy(app)
-
 
 # Modelo de la tabla LOG 
 class log(db.Model):
@@ -108,7 +105,50 @@ def recibir_mensajes(req):
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
 # enviar mensaje de plantilla para envio con boton number,code,reason
-def mensaje_enviado():
+
+@app.route("/send/<number>",methods=["POST", "GET"] )
+def enviar_mensajes_whatsapp(number):
+    #empresa="SCA SOLUCIONES EXPRESS"
+    #texto = texto.lower()
+    data = request.get_json()
+
+    data=json.dumps(data)
+    #data=jsonify(data)
+
+    headers = {
+        "Content-Type" : "application/json",
+        "Authorization" : "Bearer EAARsJaQdFWwBO4kdcAn1MkR7v8EJArPhhqmN9u5gM4DafLiSBvplWVy2C3klsKLxfaUyA3DBVZCsdOFuMTqzgT5YMSOQIZAIgrJIRUCTxzuO4ZCzBIrxXwc4sDBZBdQlss4ATs8C4foRUKomW3fZBJdiimZCYYD2KzD2MxYiTuZAxXlzwe6dXMD0qb8HQD0LpILIl738FIZBrR9a8MXGPPnPXlkvI9sJvWEGk4uCZBE2K0AZDZD"
+    }
+
+    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+
+    try:
+        response = requests.request("POST", url, headers=headers, data=data)
+        st=response.status_code
+        
+        if st == 200:
+            data= response.json()
+            # respuesta datos de contacto
+            contacts=data["contacts"]
+            wa_id=contacts[0]["wa_id"]
+            imputs=contacts[0]["input"]
+            # respuesta id de whatsapp
+            messages=data["messages"]
+            id=messages[0]["id"] 
+            mensaje_enviado(data)       
+            return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
+        elif st == 401:
+            return jsonify({'message':"no enviado token"})
+        else:
+            return jsonify({'message':"no enviado red"})
+        #agregar_mensajes_log(json.dumps(text))
+    except Exception as e:
+        return jsonify({'message':"no enviado"})
+    finally:
+        response.close()
+
+##
+def mensaje_enviado(data):
     import mysql.connector
     mydb = mysql.connector.connect(
         host = "pychat.informaticaf5.com",
@@ -146,46 +186,6 @@ def mensaje_enviado():
 
 
     return("guardado")
-
-@app.route("/send/<number>",methods=["POST", "GET"] )
-def enviar_mensajes_whatsapp(number):
-    #empresa="SCA SOLUCIONES EXPRESS"
-    #texto = texto.lower()
-    data = request.get_json()
-
-    data=json.dumps(data)
-    #data=jsonify(data)
-
-    headers = {
-        "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBOwcIjmvVIhFOsRZCNxqmV2ve8DoozYWeccSLaMs374gtjCkI0zGGuxmsIPQ8edSTuy6LofcZAwHJHyPZCdgpqqEV20Ta6ZCSSJdjwmoOvrUNVCtZArZBy4ddEY7ZAH8FAls99ZCrTpK5uuxZB9EL1rqDjYnbw7nQZA8kgRMOMQrUIJ5X9uz2Jqm70gSptNClUcxn2lYAAYpGlogi5qNBpx9R7nFC1DItITbAZDZD"
-    }
-
-    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
-
-    try:
-        response = requests.request("POST", url, headers=headers, data=data)
-        st=response.status_code
-        
-        if st == 200:
-            data= response.json()
-            # respuesta datos de contacto
-            contacts=data["contacts"]
-            wa_id=contacts[0]["wa_id"]
-            imputs=contacts[0]["input"]
-            # respuesta id de whatsapp
-            messages=data["messages"]
-            id=messages[0]["id"]        
-            return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
-        elif st == 401:
-            return jsonify({'message':"no enviado token"})
-        else:
-            return jsonify({'message':"no enviado red"})
-        #agregar_mensajes_log(json.dumps(text))
-    except Exception as e:
-        return jsonify({'message':"no enviado"})
-    finally:
-        response.close()
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
