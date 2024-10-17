@@ -109,7 +109,9 @@ def recibir_mensajes(req):
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
-    texto = request.json['text']
+    #texto = request.json['text']
+    texto = request.get_json()
+
     #data = request.get_json()
     data = {
             "messaging_product": "whatsapp",
