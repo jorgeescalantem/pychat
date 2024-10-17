@@ -109,8 +109,42 @@ def recibir_mensajes(req):
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
-    #texto = texto.lower()
-    data = request.get_json()
+    texto = request.json['text']
+    #data = request.get_json()
+    data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": number,
+            "type": "interactive",
+            "interactive":{
+                "type":"button",
+                "body": {
+                    "text": texto
+                },
+                "footer": {
+                    "text": "Desea confirmar el servicio"
+                },
+                "action": {
+                    "buttons":[
+                        {
+                            "type": "reply",
+                            "reply":{
+                                "id":"btnconfirmar",
+                                "title":"Confirmar"
+                            }
+                        },{
+                            "type": "reply",
+                            "reply":{
+                                "id":"btncancelar",
+                                "title":"Cancelar"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+
 
     data=json.dumps(data)
     #data=jsonify(data)
@@ -135,6 +169,7 @@ def enviar_mensajes_whatsapp(number):
             # respuesta id de whatsapp
             messages=data["messages"]
             id=messages[0]["id"] 
+
             #mensaje_enviado(data)       
             return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
