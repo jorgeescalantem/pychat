@@ -109,9 +109,9 @@ def recibir_mensajes(req):
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
-    #texto = request.json['text']
-    texto = request.get_json()
-    textp=texto["text"]
+    texto = request.json['text']
+    #texto = request.get_json()
+    textp="texto de prueba de captura"
     #data = request.get_json()
     data = {
             "messaging_product": "whatsapp",
@@ -177,7 +177,7 @@ def enviar_mensajes_whatsapp(number):
         elif st == 401:
             return jsonify({'message':"no enviado token"})
         else:
-            return jsonify({'message':"no enviado red"})
+            return jsonify({'message':"no enviado red","estado":st})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
         return jsonify({'message':"no enviado"})
