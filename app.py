@@ -135,7 +135,7 @@ def enviar_mensajes_whatsapp(number):
             # respuesta id de whatsapp
             messages=data["messages"]
             id=messages[0]["id"] 
-            mensaje_enviado(data)       
+            #mensaje_enviado(data)       
             return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
             return jsonify({'message':"no enviado token"})
