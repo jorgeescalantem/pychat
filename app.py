@@ -111,7 +111,7 @@ def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
     #texto = request.json['text']
     texto = request.get_json()
-
+    textp=texto["text"]
     #data = request.get_json()
     data = {
             "messaging_product": "whatsapp",
@@ -121,7 +121,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": texto
+                    "text": textp
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
