@@ -109,7 +109,9 @@ def recibir_mensajes(req):
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
-    texto = request.json['text']
+    r1=request.get_json()
+    texto = r1.text
+    
     #texto = request.get_json()
     textp="texto de prueba de captura"
     #data = request.get_json()
@@ -121,7 +123,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "texto de prueba desde body"+textp+"TP"
+                    "text": "texto de prueba desde body"+texto+"TP"
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
