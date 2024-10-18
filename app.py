@@ -110,8 +110,7 @@ def recibir_mensajes(req):
 def enviar_mensajes_whatsapp(number):
     textp = request.json['text']
     head = request.headers
-
-
+    
     data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
