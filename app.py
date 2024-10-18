@@ -122,7 +122,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "texto de prueba desde body"+textp+"TP"
+                    "text": ""+textp+""
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
