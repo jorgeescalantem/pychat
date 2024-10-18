@@ -155,7 +155,7 @@ def enviar_mensajes_whatsapp(number):
     url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
     try:
-        response = requests.request("POST", url, headers=request.headers, data=data)
+        response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code
         
         if st == 200:
