@@ -111,7 +111,6 @@ def enviar_mensajes_whatsapp(number):
     #empresa="SCA SOLUCIONES EXPRESS"
     #r1=request.get_json()
     textp = request.json['text']
-    textp.text
     #texto = request.get_json()
     #textp="texto de prueba de captura"
     #data = request.get_json()
