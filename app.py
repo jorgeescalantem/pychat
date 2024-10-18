@@ -109,7 +109,7 @@ def recibir_mensajes(req):
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     textp = request.json['text']
-    head = request.json['headers']
+    head = request.headers
 
 
     data = {
