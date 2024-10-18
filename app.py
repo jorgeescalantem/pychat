@@ -108,12 +108,10 @@ def recibir_mensajes(req):
 
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
-    #empresa="SCA SOLUCIONES EXPRESS"
-    #r1=request.get_json()
     textp = request.json['text']
-    #texto = request.get_json()
-    #textp="texto de prueba de captura"
-    #data = request.get_json()
+    head = request.json['headers']
+
+
     data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
@@ -147,11 +145,7 @@ def enviar_mensajes_whatsapp(number):
             }
         }
 
-
-
     data=json.dumps(data)
-    #data=jsonify(data)
-
     headers = {
         "Content-Type" : "application/json",
         "Authorization" : "Bearer EAARsJaQdFWwBO3sGPwtml1b3Wgb1XrDwgs6zKZCYC4xt1ycO0UhZAMw2qjJvffNYUrEFgCQ0qTrlrQVy88b3vp3JglCzDhRbvEfL6eNPGjSNBR9TuvYtWG78SvnM1ZAEin13yL6QlRO0Dji3hwaL5sFgEgDLTBWWTyQXqyTJJu3dtTrQRb9IqPWGmBnRePOtoZAxnXlIhujIDQo5GJ3bs0W66z4YGtJzgE1xyZA8QEAZDZD"
