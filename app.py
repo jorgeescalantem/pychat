@@ -153,7 +153,7 @@ def enviar_mensajes_whatsapp(number):
 
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBO47vCr2SZAO86PaUqlYz6R1nU41ZBst5IIOBqdXSgBdz5xrpxpJhD0H8W3CB0WlkaZAoVzoX2OuDlSPBPbjImrJsDZCkYxzKrfOiyjay0XOXxJNxeEnygC2cbTBGJoWWSDjKp2lYsrwfmZCFzAyIddpDtoS7VIsbuB3JZAlyZBkkZBZCi4UiOuZAmGBwH6CKq9EEA37EtdToRCgu8KsNm16RydS80ZCPJ34sQZDZD"
+        "Authorization" : "Bearer EAARsJaQdFWwBO3sGPwtml1b3Wgb1XrDwgs6zKZCYC4xt1ycO0UhZAMw2qjJvffNYUrEFgCQ0qTrlrQVy88b3vp3JglCzDhRbvEfL6eNPGjSNBR9TuvYtWG78SvnM1ZAEin13yL6QlRO0Dji3hwaL5sFgEgDLTBWWTyQXqyTJJu3dtTrQRb9IqPWGmBnRePOtoZAxnXlIhujIDQo5GJ3bs0W66z4YGtJzgE1xyZA8QEAZDZD"
     }
 
     url = "https://graph.facebook.com/v20.0/117168924654185/messages"
