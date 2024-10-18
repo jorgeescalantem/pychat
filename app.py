@@ -121,7 +121,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "texto de prueba desde body"
+                    "text": "texto de prueba desde body"+texp+"TP"
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
