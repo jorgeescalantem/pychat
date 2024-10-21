@@ -111,8 +111,6 @@ def recibir_mensajes(req):
 def enviar_mensajes_whatsapp(number):
     textp = request.json['text']
     head = request.headers
-    
-
 
     data = {
             "messaging_product": "whatsapp",
@@ -147,21 +145,17 @@ def enviar_mensajes_whatsapp(number):
             }
         }
 
-    TOKEN_P=os.getenv('TOKEN_API')
-    
-
+    TOKEN_P=os.getenv('TOKEN_API')   
     data=json.dumps(data)
     headers = {
         "Content-Type" : "application/json",
         "Authorization" : "Bearer"+" "+TOKEN_P+""
     }
-
     url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
     try:
         response = requests.request("POST", url, headers=headers, data=data)
-        st=response.status_code
-        
+        st=response.status_code        
         if st == 200:
             data= response.json()
             # respuesta datos de contacto
@@ -172,8 +166,12 @@ def enviar_mensajes_whatsapp(number):
             messages=data["messages"]
             id=messages[0]["id"] 
 
+            send=[
+                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
+            ]
+            return jsonify(send)
             #mensaje_enviado(data)       
-            return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
+            #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
             return jsonify({'message':"no enviado token"})
         else:
@@ -183,8 +181,8 @@ def enviar_mensajes_whatsapp(number):
         return jsonify({'message':"no enviado"})
     finally:
         response.close()
-
 ##
+
 def mensaje_enviado(data):
     import mysql.connector
     mydb = mysql.connector.connect(
