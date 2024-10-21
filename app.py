@@ -169,7 +169,7 @@ def enviar_mensajes_whatsapp(number):
             send=[
                 {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
             ]
-            mensaje_enviado(send)
+            mensaje_enviado(json.dumps(send))
             return jsonify(send)
             #mensaje_enviado(data)       
             #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
@@ -185,6 +185,7 @@ def enviar_mensajes_whatsapp(number):
 ##
 
 def mensaje_enviado(send):
+    
     import mysql.connector
     mydb = mysql.connector.connect(
         host = "pychat.informaticaf5.com",
@@ -193,8 +194,8 @@ def mensaje_enviado(send):
         database='tecJa7_pychat'
       )
 
-    msg=send['message']
-    print(msg)
+    #msg=send['message']
+    #print(msg)
 
     
 
