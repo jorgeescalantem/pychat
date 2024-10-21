@@ -194,8 +194,8 @@ def mensaje_enviado(send):
         database='tecJa7_pychat'
       )
 
-    #msg=send['message']
-    #print(msg)
+    msg=send['message']
+    print(msg)
 
     
 
