@@ -179,6 +179,7 @@ def enviar_mensajes_whatsapp(number):
             return jsonify({'message':"no enviado red","estado":st})
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
+        agregar_mensajes_log(json.dumps(e))
         return jsonify({'message':"no enviado"})
     finally:
         response.close()
@@ -193,7 +194,7 @@ def mensaje_enviado(send):
         password = "Dlvb47&45",
         database='tecJa7_pychat'
       )
-
+    agregra_mensajes_log(json.dumps(send))
     msg=send['message']
     print(msg)
 
