@@ -152,7 +152,7 @@ def enviar_mensajes_whatsapp(number):
     data=json.dumps(data)
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer "+TOKEN_P+""
+        "Authorization" : TOKEN_P
     }
 
     url = "https://graph.facebook.com/v20.0/117168924654185/messages"
