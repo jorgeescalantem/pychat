@@ -169,6 +169,7 @@ def enviar_mensajes_whatsapp(number):
             send=[
                 {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
             ]
+            mensaje_enviado(send)
             return jsonify(send)
             #mensaje_enviado(data)       
             #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
@@ -183,7 +184,8 @@ def enviar_mensajes_whatsapp(number):
         response.close()
 ##
 
-def mensaje_enviado(data):
+def mensaje_enviado(send):
+    
     import mysql.connector
     mydb = mysql.connector.connect(
         host = "pychat.informaticaf5.com",
@@ -191,35 +193,6 @@ def mensaje_enviado(data):
         password = "Dlvb47&45",
         database='tecJa7_pychat'
       )
-    now = datetime.now()
-    dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    #dateac=dt_string
-    bearer="beareadadadadad"
-    numero="3561338854"
-    mycursor = mydb.cursor()
-    text="texto por capturar de prueba"
-    sql = "INSERT INTO registro (fecha_hora,mensaje_enviado,mensaje_recibido,id_wa,timestamp_wa,telefono_wa,telefono_from,profile_name,key,mensaje,status,estado,bearer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"
-    data=(1,dt_string,
-          text,
-          "null"
-          ,"null"
-          ,"null"
-          ,"null"
-          ,"null"
-          ,numero
-          ,"profile"
-          ,"key200"
-          ,"200"
-          ,"send"
-          ,bearer)
-    mycursor.execute(sql, data)
-    #mycursor.execute(sql)
-    mydb.commit()
-    mycursor.close()
-    mydb.close()
-
-
-
     return("guardado")
 
 if __name__=='__main__':
