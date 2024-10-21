@@ -185,7 +185,6 @@ def enviar_mensajes_whatsapp(number):
 ##
 
 def mensaje_enviado(send):
-    
     import mysql.connector
     mydb = mysql.connector.connect(
         host = "pychat.informaticaf5.com",
@@ -193,6 +192,12 @@ def mensaje_enviado(send):
         password = "Dlvb47&45",
         database='tecJa7_pychat'
       )
+
+    msg=send['message']
+    print(msg)
+
+    
+
     return("guardado")
 
 if __name__=='__main__':
