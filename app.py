@@ -239,10 +239,6 @@ def mensaje_enviado(send):
             mydb.close()
             print("Conexión a MySQL cerrada")
 
-    agregar_mensajes_log(json.dumps(send))
-    msg = send_data['message']
-    print(msg)
-
     return "guardado"
 
 
