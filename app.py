@@ -194,7 +194,7 @@ def enviar_mensajes_whatsapp(number):
 ##
 
 def mensaje_enviado(send):
-import mysql.connector
+    import mysql.connector
     from mysql.connector import Error
 
     try:
