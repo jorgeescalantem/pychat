@@ -4,16 +4,16 @@ from datetime import datetime
 import http.client
 import json
 from pydantic import BaseModel, PositiveInt
-
-
-
+import requests
+import os
 
 app = Flask(__name__)
+
+
 #CONFIGURACION de la base de datos SQL lite
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///metapython.db"
 app.config['SQLLCHEMY_TRACK_MODIFICATIONS'] = False
 db=SQLAlchemy(app)
-
 
 # Modelo de la tabla LOG 
 class log(db.Model):
@@ -105,11 +105,13 @@ def recibir_mensajes(req):
 
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
-# enviar mensaje de plantilla para envio con boton
+# enviar mensaje de plantilla para envio con boton number,code,reason
+
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
-    empresa="SCA SOLUCIONES EXPRESS"
-    #texto = texto.lower()
+    textp = request.json['text']
+    head = request.headers
+
     data = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
@@ -118,7 +120,7 @@ def enviar_mensajes_whatsapp(number):
             "interactive":{
                 "type":"button",
                 "body": {
-                    "text": "Confirmacion servicio:\n¡Hola! *ALEJANDRA ESTRADA* nos contactamos de la empresa "+empresa+". \n Te escribo para confirmar el servicio de transporte de *IDA* el dia 2024-04-02 alas 11:00. \n El conductor asignado es ERNESTO PEREZ y estará conduciendo el vehículo con placa GFD679.\n Puedes llamarlo al teléfono 3247895632 . Recuerda que tu servicio tiene un valor de $ $ 5.500 por concepto de COPAGO, ante cualquier inquietud puedes contactarnos al teléfono (601)6089876."
+                    "text": ""+textp+""
                 },
                 "footer": {
                     "text": "Desea confirmar el servicio"
@@ -143,53 +145,62 @@ def enviar_mensajes_whatsapp(number):
             }
         }
 
+    TOKEN_P=os.getenv('TOKEN_API')   
     data=json.dumps(data)
-    #data=jsonify(data)
-
     headers = {
         "Content-Type" : "application/json",
-        "Authorization" : "Bearer EAARsJaQdFWwBOzdyhG4WqdBNsAmk9h7lZAQW7GCEzRxdPBI1JfELdVfah7Xv0XdfVTGIGOFSvHjTTruy46umYzOTxCSQbOO3UFjqAVfOW06l3Afz2fayt2ugmxqijcN1yIQGrDPban6ms8WcwWXmRnX0rAZBkwBeybcWQX7esCVB7RWZCydeFM9SkzHaga1OKwqrGS60TL66ZAb6qh3BuoWmnltqZAo2Jr0QZD"
+        "Authorization" : "Bearer"+" "+TOKEN_P+""
     }
-
-    connection = http.client.HTTPSConnection("graph.facebook.com")
+    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
     try:
-        connection.request("POST","/v19.0/117168924654185/messages", data, headers)
-        response = connection.getresponse()
-        #req = request.get_json()
-        #req=response.getheader()
-        recibir_mensajes(response)
-        docs_dict = [response.to_json() for doc in response]
-        
-        
-        if response.status == 200:
-            
-            #product=response["messaging_product"]
-            #product1=(json.dumps(product))
-            #contacts=response["contacts"]
-            #imputs=contacts[0]["input"]
-            #wa_id=contacts[0]["wa_id"]
+        response = requests.request("POST", url, headers=headers, data=data)
+        st=response.status_code        
+        if st == 200:
+            data= response.json()
+            # respuesta datos de contacto
+            contacts=data["contacts"]
+            wa_id=contacts[0]["wa_id"]
+            imputs=contacts[0]["input"]
+            # respuesta id de whatsapp
+            messages=data["messages"]
+            id=messages[0]["id"] 
 
-            #messages=response["messages"]
-            #id=messages[0]["id"]
-            #stado=messages[0]["message_status"]
-            #type(respuesta1)
-            if len (docs_dict) != 0:
-                #ll=len(respuesta1)
-                rp="respuesta ID"
-                agregra_mensajes_log(json.dumps(docs_dict))
-            else:
-                rp="respuesta sin ID"
-        elif response.status == 500:
-            rp="respuesta status 500"
-        else:    
-            rp="respuesta status 500"
-        return jsonify({"status": response.status,"telefono":number,"reason":response.reason,"rp ciclo":rp,"id_wa":product1})
-
+            send=[
+                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
+            ]
+            mensaje_enviado(json.dumps(send))
+            return jsonify(send)
+            #mensaje_enviado(data)       
+            #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
+        elif st == 401:
+            return jsonify({'message':"no enviado token"})
+        else:
+            return jsonify({'message':"no enviado red","estado":st})
+        #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
-        agregra_mensajes_log(json.dumps(e))
+        agregar_mensajes_log(json.dumps(e))
+        return jsonify({'message':"no enviado"})
     finally:
-        connection.close()
+        response.close()
+##
+
+def mensaje_enviado(send):
+    
+    import mysql.connector
+    mydb = mysql.connector.connect(
+        host = "pychat.informaticaf5.com",
+        user = "tecJa7_TecJa7",
+        password = "Dlvb47&45",
+        database='tecJa7_pychat'
+      )
+    agregra_mensajes_log(json.dumps(send))
+    msg=send['message']
+    print(msg)
+
+    
+
+    return("guardado")
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)

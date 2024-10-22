@@ -109,62 +109,68 @@ def recibir_mensajes(req):
 
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
-    textp = request.json['text']
-    head = request.headers
+    try:
 
-    data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "interactive",
-            "interactive":{
-                "type":"button",
-                "body": {
-                    "text": ""+textp+""
-                },
-                "footer": {
-                    "text": "Desea confirmar el servicio"
-                },
-                "action": {
-                    "buttons":[
-                        {
-                            "type": "reply",
-                            "reply":{
-                                "id":"btnconfirmar",
-                                "title":"Confirmar"
+        textp = request.json.get('text', '')
+        if not textp:
+            return jsonify({'message': "Text is required"}), 400
+
+        data = {
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": number,
+                "type": "interactive",
+                "interactive":{
+                    "type":"button",
+                    "body": {
+                        "text": textp
+                    },
+                    "footer": {
+                        "text": "Desea confirmar el servicio"
+                    },
+                    "action": {
+                        "buttons":[
+                            {
+                                "type": "reply",
+                                "reply":{
+                                    "id":"btnconfirmar",
+                                    "title":"Confirmar"
+                                }
+                            },{
+                                "type": "reply",
+                                "reply":{
+                                    "id":"btncancelar",
+                                    "title":"Cancelar"
+                                }
                             }
-                        },{
-                            "type": "reply",
-                            "reply":{
-                                "id":"btncancelar",
-                                "title":"Cancelar"
-                            }
-                        }
-                    ]
+                        ]
+                    }
                 }
             }
-        }
 
-    TOKEN_P=os.getenv('TOKEN_API')   
-    data=json.dumps(data)
-    headers = {
-        "Content-Type" : "application/json",
-        "Authorization" : "Bearer"+" "+TOKEN_P+""
-    }
-    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+        TOKEN_P=os.getenv('TOKEN_API')
+        if not TOKEN_P:
+                return jsonify({'message': "Token is missing"}), 500
+   
+        data=json.dumps(data)
+        headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {TOKEN_P}"
+            }
+        url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
-    try:
+    
         response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code        
         if st == 200:
             data= response.json()
             # respuesta datos de contacto
-            contacts=data["contacts"]
-            wa_id=contacts[0]["wa_id"]
-            imputs=contacts[0]["input"]
-            # respuesta id de whatsapp
-            messages=data["messages"]
-            id=messages[0]["id"] 
+            contacts = data.get("contacts", [{}])[0]
+            messages = data.get("messages", [{}])[0]
+
+            wa_id = contacts.get("wa_id", "")
+            imputs = contacts.get("input", "")
+            id = messages.get("id", "") 
 
             send=[
                 {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
@@ -174,15 +180,16 @@ def enviar_mensajes_whatsapp(number):
             #mensaje_enviado(data)       
             #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
-            return jsonify({'message':"no enviado token"})
+            return jsonify({'message': "Unauthorized, invalid token"}), 401
         else:
-            return jsonify({'message':"no enviado red","estado":st})
+            return jsonify({'message': "Failed to send message", "estado": st}), st
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
-        agregar_mensajes_log(json.dumps(e))
-        return jsonify({'message':"no enviado"})
+        #agregar_mensajes_log(json.dumps(e))
+        return jsonify({'message': f"Error: {str(e)}"}), 500
     finally:
-        response.close()
+        if 'response' in locals():
+            response.close()
 ##
 
 def mensaje_enviado(send):
