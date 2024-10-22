@@ -165,12 +165,12 @@ def enviar_mensajes_whatsapp(number):
         if st == 200:
             data= response.json()
             # respuesta datos de contacto
-            contacts = data.get("contacts", [{}])[0]
-            messages = data.get("messages", [{}])[0]
-
-            wa_id = contacts.get("wa_id", "")
-            imputs = contacts.get("input", "")
-            id = messages.get("id", "") 
+            contacts=data["contacts"]
+            wa_id=contacts[0]["wa_id"]
+            imputs=contacts[0]["input"]
+            # respuesta id de whatsapp
+            messages=data["messages"]
+            id=messages[0]["id"] 
 
             send=[
                 {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
