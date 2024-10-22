@@ -20,7 +20,7 @@ db=SQLAlchemy(app)
 # Modelo de la tabla LOG 
 class log(db.Model):
     id=db.Column(db.Integer,primary_key=True)
-    fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow())
+    fecha_y_hora=db.Column(db.DateTime,default=datetime.datetime.now(tz=pytz.utc))
     texto=db.Column(db.TEXT)
 
 # crear tabla si no exixte
