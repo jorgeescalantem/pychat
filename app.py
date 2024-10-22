@@ -6,6 +6,8 @@ import json
 from pydantic import BaseModel, PositiveInt
 import requests
 import os
+import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -111,8 +113,8 @@ def recibir_mensajes(req):
 def enviar_mensajes_whatsapp(number):
     try:
 
-        textp = request.json.get('text')
-        #textp = request.json['text']
+        #textp = request.json.get('text')
+        textp = request.json['text']
         if not textp:
             return jsonify({'message': "Text is required"}), 400
 
@@ -217,10 +219,13 @@ def mensaje_enviado(send):
             imput = send_data['imput']
             contacto = send_data['contacto']
 
+            bogota_timezone = pytz.timezone('America/Bogota')
+            bogota_datetime = datetime.datetime.now(bogota_timezone)
+            fecha_hora = bogota_datetime.strftime("%Y-%m-%d %H:%M:%S")
             # Insertar los datos en la tabla mensajes_enviados
-            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto)
-                                  VALUES (%s, %s, %s, %s, %s)"""
-            insert_tuple = (message, estado, idWA, imput, contacto)
+            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto, fecha_hora)
+                                  VALUES (%s, %s, %s, %s, %s, %s)"""
+            insert_tuple = (message, estado, idWA, imput, contacto, fecha_hora)
             cursor.execute(sql_insert_query, insert_tuple)
             mydb.commit()
 
