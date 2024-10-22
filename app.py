@@ -220,7 +220,7 @@ def mensaje_enviado(send):
             contacto = send_data['contacto']
 
             bogota_timezone = pytz.timezone('America/Bogota')
-            bogota_datetime = datetime.datetime.now(bogota_timezone)
+            bogota_datetime = datetime.datetime.utcnow(bogota_timezone)
             fecha_hora = bogota_datetime.strftime("%Y-%m-%d %H:%M:%S")
             # Insertar los datos en la tabla mensajes_enviados
             sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto, fecha_hora)
