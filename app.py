@@ -194,21 +194,53 @@ def enviar_mensajes_whatsapp(number):
 ##
 
 def mensaje_enviado(send):
-    
-    import mysql.connector
-    mydb = mysql.connector.connect(
-        host = "pychat.informaticaf5.com",
-        user = "tecJa7_TecJa7",
-        password = "Dlvb47&45",
-        database='tecJa7_pychat'
-      )
-    agregra_mensajes_log(json.dumps(send))
-    msg=send['message']
+import mysql.connector
+    from mysql.connector import Error
+
+    try:
+        # Conectar a la base de datos MySQL
+        mydb = mysql.connector.connect(
+            host="pychat.informaticaf5.com",
+            user="tecJa7_TecJa7",
+            password="Dlvb47&45",
+            database='tecJa7_pychat'
+        )
+
+        if mydb.is_connected():
+            cursor = mydb.cursor()
+
+            # Parsear el JSON de send
+            send_data = json.loads(send)[0]
+            message = send_data['message']
+            estado = send_data['estado']
+            idWA = send_data['idWA']
+            imput = send_data['imput']
+            contacto = send_data['contacto']
+
+            # Insertar los datos en la tabla mensajes_enviados
+            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto)
+                                  VALUES (%s, %s, %s, %s, %s)"""
+            insert_tuple = (message, estado, idWA, imput, contacto)
+            cursor.execute(sql_insert_query, insert_tuple)
+            mydb.commit()
+
+            print("Registro insertado exitosamente en la tabla mensajes_enviados")
+
+    except Error as e:
+        print(f"Error al conectar a MySQL: {e}")
+    finally:
+        if mydb.is_connected():
+            cursor.close()
+            mydb.close()
+            print("Conexión a MySQL cerrada")
+
+    agregar_mensajes_log(json.dumps(send))
+    msg = send_data['message']
     print(msg)
 
-    
+    return "guardado"
 
-    return("guardado")
+
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
