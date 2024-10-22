@@ -111,8 +111,8 @@ def recibir_mensajes(req):
 def enviar_mensajes_whatsapp(number):
     try:
 
-        #textp = request.json.get('text')
-        textp = request.json['text']
+        textp = request.json.get('text')
+        #textp = request.json['text']
         if not textp:
             return jsonify({'message': "Text is required"}), 400
 
@@ -166,12 +166,12 @@ def enviar_mensajes_whatsapp(number):
         if st == 200:
             data= response.json()
             # respuesta datos de contacto
-            contacts=data["contacts"]
-            wa_id=contacts[0]["wa_id"]
-            imputs=contacts[0]["input"]
+            contacts = data.get("contacts", [{}])[0]
+            wa_id = contacts.get("wa_id", "")
+            imputs = contacts.get("input", "")
             # respuesta id de whatsapp
-            messages=data["messages"]
-            id=messages[0]["id"] 
+            messages = data.get("messages", [{}])[0]
+            id = messages.get("id", "")
 
             send=[
                 {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
