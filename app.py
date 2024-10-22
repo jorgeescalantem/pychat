@@ -111,7 +111,8 @@ def recibir_mensajes(req):
 def enviar_mensajes_whatsapp(number):
     try:
 
-        textp = request.json.get('text', '')
+        #textp = request.json.get('text')
+        textp = request.json['text']
         if not textp:
             return jsonify({'message': "Text is required"}), 400
 
