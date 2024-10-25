@@ -208,10 +208,9 @@ def mensaje_enviado(send):
     
     try:
         # Conectar a la base de datos MySQL
-
+        
         if mydb.is_connected():
             cursor = mydb.cursor()
-
             # Parsear el JSON de send
             send_data = json.loads(send)[0]
             message = send_data['message']
@@ -239,7 +238,7 @@ def mensaje_enviado(send):
             cursor.close()
             #mydb.close()
             #print("Conexión a MySQL cerrada")
-
+            
     return "guardado"
 
 
