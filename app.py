@@ -195,8 +195,7 @@ def enviar_mensajes_whatsapp(number):
             response.close()
 ##
 import mysql.connector
-
-
+from mysql.connector import Error
 mydb = mysql.connector.connect(
     host="pychat.informaticaf5.com",
     user="tecJa7_TecJa7",
@@ -204,10 +203,9 @@ mydb = mysql.connector.connect(
     database='tecJa7_pychat'
     )
 
-
 def mensaje_enviado(send):
 
-    from mysql.connector import Error
+    
     try:
         # Conectar a la base de datos MySQL
 
