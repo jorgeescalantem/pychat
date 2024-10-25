@@ -237,8 +237,8 @@ def mensaje_enviado(send):
     finally:
         if mydb.is_connected():
             cursor.close()
-            mydb.close()
-            print("Conexión a MySQL cerrada")
+            #mydb.close()
+            #print("Conexión a MySQL cerrada")
 
     return "guardado"
 
