@@ -194,29 +194,33 @@ def enviar_mensajes_whatsapp(number):
         if 'response' in locals():
             response.close()
 ##
-#import mysql.connector
-#from mysql.connector import Error
-#mydb = mysql.connector.connect(
-#    host="pychat.informaticaf5.com",
-#    user="tecJa7_TecJa7",
-#    password="Dlvb47&45",
-#    database='tecJa7_pychat'
-#    )
+def obtener_conexion():
+    import mysql.connector
+    from mysql.connector import Error
+    #Función para obtener una conexión a la base de datos."""
+
+    return mysql.connector.connect(
+        host="pychat.informaticaf5.com",
+        user="tecJa7_TecJa7",
+        password="Dlvb47&45",
+        database='tecJa7_pychat'
+    )
 
 def mensaje_enviado(send):
 
     
     try:
         # Conectar a la base de datos MySQL
-        import mysql.connector
-        from mysql.connector import Error
-        mydb = mysql.connector.connect(
-            host="pychat.informaticaf5.com",
-            user="tecJa7_TecJa7",
-            password="Dlvb47&45",
-            database='tecJa7_pychat'
-            )
-        
+        #import mysql.connector
+        #from mysql.connector import Error
+        #mydb = mysql.connector.connect(
+        #    host="pychat.informaticaf5.com",
+        #    user="tecJa7_TecJa7",
+        #    password="Dlvb47&45",
+        #    database='tecJa7_pychat'
+        #    )
+        mydb = obtener_conexion()
+
         if mydb.is_connected():
             cursor = mydb.cursor()
             # Parsear el JSON de send
