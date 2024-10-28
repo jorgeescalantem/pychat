@@ -209,6 +209,7 @@ def mensaje_enviado(send):
     try:
         # Conectar a la base de datos MySQL
         
+        
         if mydb.is_connected():
             cursor = mydb.cursor()
             # Parsear el JSON de send
@@ -234,11 +235,12 @@ def mensaje_enviado(send):
     except Error as e:
         print(f"Error al conectar a MySQL: {e}")
     finally:
+
         if mydb.is_connected():
             cursor.close()
-            mydb.close()
+            #mydb.close()
             print("Conexión a MySQL cerrada")
-            
+    mydb.close()       
     return "guardado"
 
 
