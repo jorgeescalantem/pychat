@@ -176,7 +176,7 @@ def enviar_mensajes_whatsapp(number):
             id = messages.get("id", "")
 
             send=[
-                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
+                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id,"text":textp,"respuesta":"sin responder"}
             ]
             mensaje_enviado(json.dumps(send))
             return jsonify(send)
@@ -223,14 +223,16 @@ def mensaje_enviado(send):
             idWA = send_data['idWA']
             imput = send_data['imput']
             contacto = send_data['contacto']
+            texto= send_data['text'] 
+            respuesta= send_data['respuesta']
 
             utc_now = datetime.datetime.utcnow()
             bogota_timezone = pytz.timezone('America/Bogota')
             fecha_hora = utc_now.replace(tzinfo=pytz.utc).astimezone(bogota_timezone)
             # Insertar los datos en la tabla mensajes_enviados
-            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto, fecha_hora)
-                                  VALUES (%s, %s, %s, %s, %s, %s)"""
-            insert_tuple = (message, estado, idWA, imput, contacto, fecha_hora)
+            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto, fecha_hora,texto,respuesta)
+                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            insert_tuple = (message, estado, idWA, imput, contacto, fecha_hora,texto,respuesta)
             cursor.execute(sql_insert_query, insert_tuple)
             mydb.commit()
 
@@ -245,6 +247,7 @@ def mensaje_enviado(send):
             mydb.close()
             print("Conexión a MySQL cerrada")      
     return "guardado"
+
 
 
 
