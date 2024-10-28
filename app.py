@@ -80,15 +80,24 @@ def recibir_mensajes(req):
             messages=objeto_mensaje[0]
             if "type" in messages:
                 tipo= messages["type"]
+                
                 #Guardar Log en la BD
                 agregra_mensajes_log(json.dumps(req))
                 #agregra_mensajes_log(jsonify(messages))
 
                 if tipo == "interactive":
+                    desde=messages["context"]["from"]
+                    waidm=messages["context"]["id"]
+
                     tipo_interactivo = messages["interactive"]["type"]
+
                     if tipo_interactivo == "button_reply":
-                        text = messages["interactive"]["button_reply"]["id"]
+                        respuesta = messages["interactive"]["button_reply"]["title"]
+
                         numero = messages["from"]
+                        me="respondido"
+
+                    update_respuesta(waidm,respuesta,me)
                     #return 1
                     
                 if "text" in messages:
@@ -248,6 +257,26 @@ def mensaje_enviado(send):
             print("Conexión a MySQL cerrada")      
     return "guardado"
 
+def update_respuesta(waidm,respuesta,me):
+
+    conexion = conectar()
+    try:
+        if conexion.is_connected():
+            cursor = conexion.cursor()
+            sql_update_query = """UPDATE mensajes_enviados SET respuesta = %s WHERE idWA = %s"""
+            cursor.execute(sql_update_query, (respuesta, waidm))
+            conexion.commit()
+            #print(f"Estado del mensaje con waid {waid} actualizado a '{estado}'.")
+    except Error as e:
+        print("Error al actualizar el estado del mensaje:", e)
+    finally:
+        if conexion.is_connected():
+            cursor.close()
+            conexion.close()
+
+
+
+    return "actualizado"
 
 
 
