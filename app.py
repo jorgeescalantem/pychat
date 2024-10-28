@@ -199,8 +199,8 @@ def conectar():
     from mysql.connector import Error
     #Función para obtener una conexión a la base de datos."""
     pmy=os.getenv('MySQL')
-        if not pmy:
-            return jsonify({'message': "mySQL vacio"}), 500
+    if not pmy:
+        return jsonify({'message': "mySQL vacio"}), 500
 
     return mysql.connector.connect(
         host="pychat.informaticaf5.com",
