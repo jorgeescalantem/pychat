@@ -263,8 +263,8 @@ def update_respuesta(waidm,respuesta,me):
     try:
         if conexion.is_connected():
             cursor = conexion.cursor()
-            sql_update_query = """UPDATE mensajes_enviados SET respuesta = %s WHERE idWA = %s"""
-            cursor.execute(sql_update_query, (respuesta, waidm))
+            sql_update_query = """UPDATE mensajes_enviados SET respuesta = %s,message= %s WHERE idWA = %s"""
+            cursor.execute(sql_update_query, (respuesta, me,waidm))
             conexion.commit()
             #print(f"Estado del mensaje con waid {waid} actualizado a '{estado}'.")
     except Error as e:
