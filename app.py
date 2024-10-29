@@ -90,7 +90,6 @@ def recibir_mensajes(req):
                     waidm=messages["context"]["id"]
 
                     tipo_interactivo = messages["interactive"]["type"]
-
                     if tipo_interactivo == "button_reply":
                         respuesta = messages["interactive"]["button_reply"]["title"]
 
@@ -116,8 +115,16 @@ def recibir_mensajes(req):
 
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
-# enviar mensaje de plantilla para envio con boton number,code,reason
+# enviar respuesta a mensaje diferente a confirmacion
+def respuesta(numero):
+    text_respuesta="recuerda que este chat es exclusivo para la confirmacion de servicios. si requieres mas informacion comunicate al: 3204589635"
+    
 
+
+
+
+    return "ok"    
+# enviar mensaje de plantilla para envio con boton number,code,reason
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     try:
@@ -258,13 +265,12 @@ def mensaje_enviado(send):
     return "guardado"
 
 def update_respuesta(waidm,respuesta,me):
-
     conexion = conectar()
     try:
         if conexion.is_connected():
             cursor = conexion.cursor()
             sql_update_query = """UPDATE mensajes_enviados SET respuesta = %s,message= %s WHERE idWA = %s"""
-            cursor.execute(sql_update_query, (respuesta, me,waidm))
+            cursor.execute(sql_update_query, (respuesta, me, waidm))
             conexion.commit()
             #print(f"Estado del mensaje con waid {waid} actualizado a '{estado}'.")
     except Error as e:
@@ -273,9 +279,6 @@ def update_respuesta(waidm,respuesta,me):
         if conexion.is_connected():
             cursor.close()
             conexion.close()
-
-
-
     return "actualizado"
 
 

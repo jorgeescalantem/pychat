@@ -6,6 +6,8 @@ import json
 from pydantic import BaseModel, PositiveInt
 import requests
 import os
+import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -18,7 +20,7 @@ db=SQLAlchemy(app)
 # Modelo de la tabla LOG 
 class log(db.Model):
     id=db.Column(db.Integer,primary_key=True)
-    fecha_y_hora=db.Column(db.DateTime,default=datetime.utcnow)
+    fecha_y_hora=db.Column(db.DateTime,default=datetime.datetime.now(tz=pytz.utc))
     texto=db.Column(db.TEXT)
 
 # crear tabla si no exixte
@@ -78,15 +80,24 @@ def recibir_mensajes(req):
             messages=objeto_mensaje[0]
             if "type" in messages:
                 tipo= messages["type"]
+                
                 #Guardar Log en la BD
                 agregra_mensajes_log(json.dumps(req))
                 #agregra_mensajes_log(jsonify(messages))
 
                 if tipo == "interactive":
+                    desde=messages["context"]["from"]
+                    waidm=messages["context"]["id"]
+
                     tipo_interactivo = messages["interactive"]["type"]
+
                     if tipo_interactivo == "button_reply":
-                        text = messages["interactive"]["button_reply"]["id"]
+                        respuesta = messages["interactive"]["button_reply"]["title"]
+
                         numero = messages["from"]
+                        me="respondido"
+
+                    update_respuesta(waidm,respuesta,me)
                     #return 1
                     
                 if "text" in messages:
@@ -109,98 +120,161 @@ def recibir_mensajes(req):
 
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
-    textp = request.json['text']
-    head = request.headers
+    try:
 
-    data = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": number,
-            "type": "interactive",
-            "interactive":{
-                "type":"button",
-                "body": {
-                    "text": ""+textp+""
-                },
-                "footer": {
-                    "text": "Desea confirmar el servicio"
-                },
-                "action": {
-                    "buttons":[
-                        {
-                            "type": "reply",
-                            "reply":{
-                                "id":"btnconfirmar",
-                                "title":"Confirmar"
+        #textp = request.json.get('text')
+        textp = request.json['text']
+        if not textp:
+            return jsonify({'message': "Text is required"}), 400
+
+        data = {
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": number,
+                "type": "interactive",
+                "interactive":{
+                    "type":"button",
+                    "body": {
+                        "text": textp
+                    },
+                    "footer": {
+                        "text": "Desea confirmar el servicio"
+                    },
+                    "action": {
+                        "buttons":[
+                            {
+                                "type": "reply",
+                                "reply":{
+                                    "id":"btnconfirmar",
+                                    "title":"Confirmar"
+                                }
+                            },{
+                                "type": "reply",
+                                "reply":{
+                                    "id":"btncancelar",
+                                    "title":"Cancelar"
+                                }
                             }
-                        },{
-                            "type": "reply",
-                            "reply":{
-                                "id":"btncancelar",
-                                "title":"Cancelar"
-                            }
-                        }
-                    ]
+                        ]
+                    }
                 }
             }
-        }
 
-    TOKEN_P=os.getenv('TOKEN_API')   
-    data=json.dumps(data)
-    headers = {
-        "Content-Type" : "application/json",
-        "Authorization" : "Bearer"+" "+TOKEN_P+""
-    }
-    url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+        TOKEN_P=os.getenv('TOKEN_API')
+        if not TOKEN_P:
+                return jsonify({'message': "Token is missing"}), 500
+   
+        data=json.dumps(data)
+        headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {TOKEN_P}"
+            }
+        url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
-    try:
+    
         response = requests.request("POST", url, headers=headers, data=data)
         st=response.status_code        
         if st == 200:
             data= response.json()
             # respuesta datos de contacto
-            contacts=data["contacts"]
-            wa_id=contacts[0]["wa_id"]
-            imputs=contacts[0]["input"]
+            contacts = data.get("contacts", [{}])[0]
+            wa_id = contacts.get("wa_id", "")
+            imputs = contacts.get("input", "")
             # respuesta id de whatsapp
-            messages=data["messages"]
-            id=messages[0]["id"] 
+            messages = data.get("messages", [{}])[0]
+            id = messages.get("id", "")
 
             send=[
-                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id}
+                {'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id,"text":textp,"respuesta":"sin responder"}
             ]
             mensaje_enviado(json.dumps(send))
             return jsonify(send)
             #mensaje_enviado(data)       
             #return jsonify({'message':"enviado","estado":st,"idWA":id,"imput":imputs,"contacto":wa_id})
         elif st == 401:
-            return jsonify({'message':"no enviado token"})
+            return jsonify({'message': "Unauthorized, invalid token"}), 401
         else:
-            return jsonify({'message':"no enviado red","estado":st})
+            return jsonify({'message': "Failed to send message", "estado": st}), st
         #agregar_mensajes_log(json.dumps(text))
     except Exception as e:
-        agregar_mensajes_log(json.dumps(e))
-        return jsonify({'message':"no enviado"})
+        #agregar_mensajes_log(json.dumps(e))
+        return jsonify({'message': f"Error: {str(e)}"}), 500
     finally:
-        response.close()
+        if 'response' in locals():
+            response.close()
 ##
+def conectar():
+    import mysql.connector
+    from mysql.connector import Error
+    #Función para obtener una conexión a la base de datos."""
+    pmy=os.getenv('MySQL')
+    if not pmy:
+        return jsonify({'message': "mySQL vacio"}), 500
+
+    return mysql.connector.connect(
+        host="pychat.informaticaf5.com",
+        user="tecJa7_TecJa7",
+        password=pmy,
+        database='tecJa7_pychat'
+    )
 
 def mensaje_enviado(send):
-    
-    import mysql.connector
-    mydb = mysql.connector.connect(
-        host = "pychat.informaticaf5.com",
-        user = "tecJa7_TecJa7",
-        password = "Dlvb47&45",
-        database='tecJa7_pychat'
-      )
-    agregra_mensajes_log(json.dumps(send))
-    msg=send['message']
-    print(msg)
 
-    
+    try:
+        mydb = conectar()
 
-    return("guardado")
+        if mydb.is_connected():
+            cursor = mydb.cursor()
+            # Parsear el JSON de send
+            send_data = json.loads(send)[0]
+            message = send_data['message']
+            estado = send_data['estado']
+            idWA = send_data['idWA']
+            imput = send_data['imput']
+            contacto = send_data['contacto']
+            texto= send_data['text'] 
+            respuesta= send_data['respuesta']
+
+            utc_now = datetime.datetime.utcnow()
+            bogota_timezone = pytz.timezone('America/Bogota')
+            fecha_hora = utc_now.replace(tzinfo=pytz.utc).astimezone(bogota_timezone)
+            # Insertar los datos en la tabla mensajes_enviados
+            sql_insert_query = """INSERT INTO mensajes_enviados (message, estado, idWA, imput, contacto, fecha_hora,texto,respuesta)
+                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            insert_tuple = (message, estado, idWA, imput, contacto, fecha_hora,texto,respuesta)
+            cursor.execute(sql_insert_query, insert_tuple)
+            mydb.commit()
+
+            print("Registro insertado exitosamente en la tabla mensajes_enviados")
+
+    except Error as e:
+        print(f"Error al conectar a MySQL: {e}")
+    finally:
+
+        if mydb.is_connected():
+            cursor.close()
+            mydb.close()
+            print("Conexión a MySQL cerrada")      
+    return "guardado"
+
+def update_respuesta(waidm,respuesta,me):
+    conexion = conectar()
+    try:
+        if conexion.is_connected():
+            cursor = conexion.cursor()
+            sql_update_query = """UPDATE mensajes_enviados SET respuesta = %s,message= %s WHERE idWA = %s"""
+            cursor.execute(sql_update_query, (respuesta, me, waidm))
+            conexion.commit()
+            #print(f"Estado del mensaje con waid {waid} actualizado a '{estado}'.")
+    except Error as e:
+        print("Error al actualizar el estado del mensaje:", e)
+    finally:
+        if conexion.is_connected():
+            cursor.close()
+            conexion.close()
+    return "actualizado"
+
+
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
