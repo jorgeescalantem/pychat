@@ -118,6 +118,10 @@ def recibir_mensajes(req):
 # enviar respuesta a mensaje diferente a confirmacion
 def respuesta(numero):
     text_respuesta="recuerda que este chat es exclusivo para la confirmacion de servicios. si requieres mas informacion comunicate al: 3204589635"
+    textp = request.json['text']
+    if not textp:
+        return jsonify({'message': "Text is required"}), 400
+
     
 
 
