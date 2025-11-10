@@ -90,6 +90,7 @@ def recibir_mensajes(req):
                     waidm=messages["context"]["id"]
 
                     tipo_interactivo = messages["interactive"]["type"]
+
                     if tipo_interactivo == "button_reply":
                         respuesta = messages["interactive"]["button_reply"]["title"]
 
@@ -115,20 +116,8 @@ def recibir_mensajes(req):
 
     except Exception as e:    
         return jsonify({'message':'EVENT_RECEIVED'})
-# enviar respuesta a mensaje diferente a confirmacion
-def respuesta(numero):
-    text_respuesta="recuerda que este chat es exclusivo para la confirmacion de servicios. si requieres mas informacion comunicate al: 3204589635"
-    textp = request.json['text']
-    if not textp:
-        return jsonify({'message': "Text is required"}), 400
-
-    
-
-
-
-
-    return "ok"    
 # enviar mensaje de plantilla para envio con boton number,code,reason
+
 @app.route("/send/<number>",methods=["POST", "GET"] )
 def enviar_mensajes_whatsapp(number):
     try:
@@ -180,7 +169,7 @@ def enviar_mensajes_whatsapp(number):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {TOKEN_P}"
             }
-        url = "https://graph.facebook.com/v18.0/223852870813184/messages"
+        url = "https://graph.facebook.com/v20.0/117168924654185/messages"
 
     
         response = requests.request("POST", url, headers=headers, data=data)
