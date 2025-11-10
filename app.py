@@ -169,7 +169,7 @@ def enviar_mensajes_whatsapp(number):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {TOKEN_P}"
             }
-        url = "https://graph.facebook.com/v20.0/117168924654185/messages"
+        url = "https://graph.facebook.com/v18.0/223852870813184/messages"
 
     
         response = requests.request("POST", url, headers=headers, data=data)
